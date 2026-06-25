@@ -2,10 +2,12 @@ import Layout from '../components/Layout/Layout';
 import EmojiBarChart from '../components/Charts/EmojiBarChart';
 import TopWordsChart from '../components/Charts/TopWordsChart';
 import { useAnalytics } from '../hooks/useAnalytics';
+import { useChatData } from '../hooks/useChatData';
 
 export default function AnalyticsPage() {
   const { messageStats, wordStats, emojiStats, mediaStats, responseStats } = useAnalytics();
-
+  const { messages } = useChatData(); 
+  
   return (
     <Layout>
       <div className="mb-8">
@@ -29,13 +31,24 @@ export default function AnalyticsPage() {
         </div>
       </div>
 
-      {/* Longest message */}
-      <div className="bg-gray-900 rounded-2xl p-6 mb-8">
-        <p className="text-gray-400 text-sm mb-2">Longest Message — {messageStats.longestMessage.sender}</p>
-        <p className="text-white text-sm leading-relaxed line-clamp-4">
-          {messageStats.longestMessage.content || '—'}
-        </p>
-        <p className="text-gray-600 text-xs mt-2">{messageStats.longestMessage.length} characters</p>
+      {/* Longest message + Oldest message */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        <div className="bg-gray-900 rounded-2xl p-6">
+          <p className="text-gray-400 text-sm mb-2">📏 Longest Message — {messageStats.longestMessage.sender}</p>
+          <p className="text-white text-sm leading-relaxed line-clamp-4">
+            {messageStats.longestMessage.content || '—'}
+          </p>
+          <p className="text-gray-600 text-xs mt-2">{messageStats.longestMessage.length} characters</p>
+        </div>
+        <div className="bg-gray-900 rounded-2xl p-6">
+          <p className="text-gray-400 text-sm mb-2">💬 Oldest Message — {messages[0]?.sender}</p>
+          <p className="text-purple-400 text-xs font-semibold mb-2">
+            {messages[0] ? new Date(messages[0].timestamp).toLocaleDateString() : '—'}
+          </p>
+          <p className="text-white text-sm leading-relaxed line-clamp-4">
+            {messages[0]?.content || '(no text — attachment or share)'}
+          </p>
+        </div>
       </div>
 
       {/* Charts */}

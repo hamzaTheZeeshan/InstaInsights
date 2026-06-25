@@ -71,6 +71,27 @@ export default function SearchPage() {
             />
             Regex
           </label>
+
+          <div className="flex items-center gap-2">
+            <span className="text-gray-500 text-sm">From</span>
+            <input
+              type="date"
+              onChange={e => setOptions({
+                ...options,
+                startDate: e.target.value ? new Date(e.target.value).getTime() : null
+              })}
+              className="bg-gray-800 text-gray-300 rounded-xl px-3 py-2 outline-none text-sm"
+            />
+            <span className="text-gray-500 text-sm">To</span>
+            <input
+              type="date"
+              onChange={e => setOptions({
+                ...options,
+                endDate: e.target.value ? new Date(e.target.value + 'T23:59:59').getTime() : null
+              })}
+              className="bg-gray-800 text-gray-300 rounded-xl px-3 py-2 outline-none text-sm"
+            />
+          </div>
         </div>
       </div>
 
@@ -88,9 +109,8 @@ export default function SearchPage() {
             {result.context.map((msg, j) => (
               <div
                 key={msg.id}
-                className={`flex gap-3 py-2 px-3 rounded-xl mb-1 ${
-                  j === result.matchIndex ? 'bg-gray-800' : ''
-                }`}
+                className={`flex gap-3 py-2 px-3 rounded-xl mb-1 ${j === result.matchIndex ? 'bg-gray-800' : ''
+                  }`}
               >
                 <span className="text-purple-400 text-sm font-semibold min-w-24 shrink-0">
                   {msg.sender.split(' ')[0]}
