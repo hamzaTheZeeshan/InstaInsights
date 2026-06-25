@@ -1,0 +1,172 @@
+/* ============================================================
+   YearlyHeatmap.css
+   Consistent with DashboardPage.css — white card, indigo title,
+   purple intensity scale on a light background.
+   ============================================================ */
+
+/* ── Header row ───────────────────────────────────────────── */
+.yheatmap-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+}
+
+.yheatmap-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1e1b4b;
+    margin: 0;
+    letter-spacing: -0.2px;
+}
+
+/* ── Year tab buttons ─────────────────────────────────────── */
+.yheatmap-year-tabs {
+    display: flex;
+    gap: 0.375rem;
+}
+
+.yheatmap-year-btn {
+    padding: 0.3rem 0.875rem;
+    border-radius: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.yheatmap-year-btn--inactive {
+    background: #f4f6fb;
+    color: #6b7280;
+}
+
+.yheatmap-year-btn--inactive:hover {
+    background: #ede9fe;
+    color: #7c3aed;
+}
+
+.yheatmap-year-btn--active {
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+    color: #ffffff;
+    box-shadow: 0 3px 10px rgba(124, 58, 237, 0.3);
+}
+
+/* ── Year total count ─────────────────────────────────────── */
+.yheatmap-total {
+    font-size: 0.8rem;
+    color: #9ca3af;
+    margin: 0 0 1rem 0;
+}
+
+/* ── Scroll container ─────────────────────────────────────── */
+.yheatmap-scroll {
+    overflow-x: auto;
+}
+
+/* ── Month labels ─────────────────────────────────────────── */
+.yheatmap-month-row {
+    display: flex;
+    margin-bottom: 0.25rem;
+    padding-left: 28px;
+}
+
+.yheatmap-month-cell {
+    width: 14px;
+    flex-shrink: 0;
+}
+
+.yheatmap-month-label {
+    font-size: 0.65rem;
+    color: #9ca3af;
+}
+
+/* ── Grid layout ──────────────────────────────────────────── */
+.yheatmap-grid {
+    display: flex;
+    gap: 0;
+}
+
+.yheatmap-day-labels {
+    display: flex;
+    flex-direction: column;
+    margin-right: 4px;
+    gap: 2px;
+}
+
+.yheatmap-day-label {
+    height: 12px;
+    font-size: 9px;
+    color: #9ca3af;
+    display: flex;
+    align-items: center;
+}
+
+.yheatmap-day-label--hidden {
+    opacity: 0;
+}
+
+.yheatmap-weeks {
+    display: flex;
+    gap: 2px;
+}
+
+.yheatmap-week-col {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.yheatmap-cell-empty {
+    width: 12px;
+    height: 12px;
+}
+
+.yheatmap-cell {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+}
+
+.yheatmap-cell:hover {
+    opacity: 0.75;
+}
+
+/* ── Legend ───────────────────────────────────────────────── */
+.yheatmap-legend {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    margin-top: 1rem;
+}
+
+.yheatmap-legend-label {
+    font-size: 0.7rem;
+    color: #9ca3af;
+}
+
+.yheatmap-legend-swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+/* ── Tooltip ──────────────────────────────────────────────── */
+.yheatmap-tooltip {
+    position: fixed;
+    z-index: 50;
+    background: #1e1b4b;
+    color: #ffffff;
+    font-size: 0.75rem;
+    border-radius: 0.625rem;
+    padding: 0.5rem 0.75rem;
+    pointer-events: none;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+    line-height: 1.5;
+}
+
+.yheatmap-tooltip-count {
+    font-weight: 700;
+}

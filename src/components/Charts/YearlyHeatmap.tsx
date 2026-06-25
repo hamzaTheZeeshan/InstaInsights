@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import './YearlyHeatmap.css';
 import type { Message } from '../../types/message';
 
 interface Props {
@@ -9,20 +10,22 @@ const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
                  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
+/* Purple intensity scale — light theme friendly */
 function getColor(count: number): string {
-  if (count === 0) return '#1f2937';
-  if (count < 5) return '#4c1d95';
-  if (count < 15) return '#6d28d9';
-  if (count < 30) return '#7c3aed';
-  if (count < 50) return '#8b5cf6';
-  return '#a78bfa';
+  if (count === 0)   return '#ede9fe'; /* purple-100 — empty */
+  if (count < 5)    return '#c4b5fd'; /* purple-300 */
+  if (count < 15)   return '#a78bfa'; /* purple-400 */
+  if (count < 30)   return '#7c3aed'; /* purple-600 */
+  if (count < 50)   return '#6d28d9'; /* purple-700 */
+  return '#4c1d95';                   /* purple-900 — peak */
 }
+
+const LEGEND_VALUES = [0, 5, 15, 30, 50, 60];
 
 function getDaysInYear(year: number): Date[] {
   const days: Date[] = [];
-  const start = new Date(year, 0, 1);
   const end = new Date(year, 11, 31);
-  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+  for (let d = new Date(year, 0, 1); d <= end; d.setDate(d.getDate() + 1)) {
     days.push(new Date(d));
   }
   return days;
@@ -33,7 +36,6 @@ function toDateKey(date: Date): string {
 }
 
 export default function YearlyHeatmap({ messages }: Props) {
-  // build message count per day
   const countByDay = useMemo(() => {
     const map: Record<string, number> = {};
     for (const msg of messages) {
@@ -43,42 +45,34 @@ export default function YearlyHeatmap({ messages }: Props) {
     return map;
   }, [messages]);
 
-  // get all years in the chat
   const years = useMemo(() => {
     if (messages.length === 0) return [];
     const first = new Date(messages[0].timestamp).getFullYear();
-    const last = new Date(messages[messages.length - 1].timestamp).getFullYear();
+    const last  = new Date(messages[messages.length - 1].timestamp).getFullYear();
     const result: number[] = [];
     for (let y = first; y <= last; y++) result.push(y);
     return result;
   }, [messages]);
 
-  const [selectedYear, setSelectedYear] = useState<number>(() => years[years.length - 1] ?? new Date().getFullYear());
+  const [selectedYear, setSelectedYear] = useState<number>(
+    () => years[years.length - 1] ?? new Date().getFullYear()
+  );
 
-  // build weeks grid for selected year
   const weeks = useMemo(() => {
     const days = getDaysInYear(selectedYear);
-    const firstDayOfWeek = days[0].getDay(); // 0 = Sunday
-
-    // pad start so day 1 aligns to correct column
+    const firstDayOfWeek = days[0].getDay();
     const grid: (Date | null)[] = Array(firstDayOfWeek).fill(null).concat(days);
-
-    // chunk into weeks of 7
     const result: (Date | null)[][] = [];
-    for (let i = 0; i < grid.length; i += 7) {
-      result.push(grid.slice(i, i + 7));
-    }
+    for (let i = 0; i < grid.length; i += 7) result.push(grid.slice(i, i + 7));
     return result;
   }, [selectedYear]);
 
-  // month label positions
   const monthLabels = useMemo(() => {
     const labels: { month: string; weekIndex: number }[] = [];
     const days = getDaysInYear(selectedYear);
     const firstDayOfWeek = days[0].getDay();
     let lastMonth = -1;
-
-    days.forEach((day) => {
+    days.forEach(day => {
       const month = day.getMonth();
       if (month !== lastMonth) {
         const dayOfYear = Math.floor((day.getTime() - new Date(selectedYear, 0, 1).getTime()) / 86400000);
@@ -90,25 +84,31 @@ export default function YearlyHeatmap({ messages }: Props) {
     return labels;
   }, [selectedYear]);
 
-  const [tooltip, setTooltip] = useState<{ date: string; count: number; x: number; y: number } | null>(null);
+  const [tooltip, setTooltip] = useState<{
+    date: string; count: number; x: number; y: number;
+  } | null>(null);
 
   if (years.length === 0) return null;
 
+  const yearTotal = Object.entries(countByDay)
+    .filter(([k]) => k.startsWith(String(selectedYear)))
+    .reduce((sum, [, v]) => sum + v, 0);
+
   return (
-    <div className="bg-gray-900 rounded-2xl p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-white font-semibold text-lg">Yearly Activity</h3>
-        {/* Year tabs */}
-        <div className="flex gap-2">
+    <>
+      {/* Header */}
+      <div className="yheatmap-header">
+        <h3 className="yheatmap-title">Yearly Activity</h3>
+        <div className="yheatmap-year-tabs">
           {years.map(y => (
             <button
               key={y}
               onClick={() => setSelectedYear(y)}
-              className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+              className={
                 selectedYear === y
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-gray-800 text-gray-400 hover:text-white'
-              }`}
+                  ? 'yheatmap-year-btn yheatmap-year-btn--active'
+                  : 'yheatmap-year-btn yheatmap-year-btn--inactive'
+              }
             >
               {y}
             </button>
@@ -116,66 +116,63 @@ export default function YearlyHeatmap({ messages }: Props) {
         </div>
       </div>
 
-      {/* Total for year */}
-      <p className="text-gray-500 text-sm mb-4">
-        {Object.entries(countByDay)
-          .filter(([k]) => k.startsWith(String(selectedYear)))
-          .reduce((sum, [, v]) => sum + v, 0)
-          .toLocaleString()} messages in {selectedYear}
+      {/* Year total */}
+      <p className="yheatmap-total">
+        {yearTotal.toLocaleString()} messages in {selectedYear}
       </p>
 
-      <div className="overflow-x-auto">
-        <div className="relative" style={{ minWidth: `${weeks.length * 14}px` }}>
+      {/* Grid */}
+      <div className="yheatmap-scroll">
+        <div style={{ minWidth: `${weeks.length * 14}px`, position: 'relative' }}>
 
           {/* Month labels */}
-          <div className="flex mb-1" style={{ paddingLeft: '28px' }}>
+          <div className="yheatmap-month-row">
             {weeks.map((_, wi) => {
               const label = monthLabels.find(l => l.weekIndex === wi);
               return (
-                <div key={wi} style={{ width: '14px', flexShrink: 0 }}>
-                  {label && (
-                    <span className="text-gray-500 text-xs">{label.month}</span>
-                  )}
+                <div key={wi} className="yheatmap-month-cell">
+                  {label && <span className="yheatmap-month-label">{label.month}</span>}
                 </div>
               );
             })}
           </div>
 
-          <div className="flex gap-0">
+          <div className="yheatmap-grid">
             {/* Day labels */}
-            <div className="flex flex-col mr-1" style={{ gap: '2px' }}>
+            <div className="yheatmap-day-labels">
               {DAYS.map((d, i) => (
-                <div key={d} style={{ height: '12px', fontSize: '9px' }}
-                  className={`text-gray-600 flex items-center ${i % 2 === 0 ? 'opacity-0' : ''}`}>
+                <div
+                  key={d}
+                  className={
+                    i % 2 === 0
+                      ? 'yheatmap-day-label yheatmap-day-label--hidden'
+                      : 'yheatmap-day-label'
+                  }
+                >
                   {d}
                 </div>
               ))}
             </div>
 
-            {/* Heatmap grid */}
-            <div className="flex" style={{ gap: '2px' }}>
+            {/* Heatmap cells */}
+            <div className="yheatmap-weeks">
               {weeks.map((week, wi) => (
-                <div key={wi} className="flex flex-col" style={{ gap: '2px' }}>
+                <div key={wi} className="yheatmap-week-col">
                   {week.map((day, di) => {
-                    if (!day) {
-                      return <div key={di} style={{ width: '12px', height: '12px' }} />;
-                    }
+                    if (!day) return <div key={di} className="yheatmap-cell-empty" />;
                     const key = toDateKey(day);
                     const count = countByDay[key] ?? 0;
                     return (
                       <div
                         key={di}
-                        style={{
-                          width: '12px',
-                          height: '12px',
-                          backgroundColor: getColor(count),
-                          borderRadius: '2px',
-                          cursor: 'pointer',
-                        }}
-                        onMouseEnter={(e) => {
+                        className="yheatmap-cell"
+                        style={{ backgroundColor: getColor(count) }}
+                        onMouseEnter={e => {
                           const rect = (e.target as HTMLElement).getBoundingClientRect();
                           setTooltip({
-                            date: day.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+                            date: day.toLocaleDateString('en-US', {
+                              month: 'short', day: 'numeric', year: 'numeric',
+                            }),
                             count,
                             x: rect.left,
                             y: rect.top,
@@ -193,28 +190,29 @@ export default function YearlyHeatmap({ messages }: Props) {
       </div>
 
       {/* Legend */}
-      <div className="flex items-center gap-2 mt-4">
-        <span className="text-gray-500 text-xs">0</span>
-        {[0, 5, 15, 30, 50].map(v => (
+      <div className="yheatmap-legend">
+        <span className="yheatmap-legend-label">Less</span>
+        {LEGEND_VALUES.map(v => (
           <div
             key={v}
-            style={{ width: '12px', height: '12px', backgroundColor: getColor(v), borderRadius: '2px' }}
+            className="yheatmap-legend-swatch"
+            style={{ backgroundColor: getColor(v) }}
           />
         ))}
-        <span className="text-gray-500 text-xs">50+</span>
+        <span className="yheatmap-legend-label">More</span>
       </div>
 
       {/* Tooltip */}
       {tooltip && (
         <div
-          className="fixed z-50 bg-gray-800 text-white text-xs rounded-lg px-3 py-2 pointer-events-none shadow-lg"
-          style={{ left: tooltip.x + 16, top: tooltip.y - 40 }}
+          className="yheatmap-tooltip"
+          style={{ left: tooltip.x + 16, top: tooltip.y - 44 }}
         >
-          <span className="font-semibold">{tooltip.count} messages</span>
+          <span className="yheatmap-tooltip-count">{tooltip.count} messages</span>
           <br />
           {tooltip.date}
         </div>
       )}
-    </div>
+    </>
   );
 }

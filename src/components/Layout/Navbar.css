@@ -1,0 +1,86 @@
+/* ============================================================
+   Navbar.css
+   Consistent with DashboardPage.css — white background, indigo
+   text, purple accent for active link.
+   ============================================================ */
+
+/* ── Nav wrapper ──────────────────────────────────────────── */
+.navbar {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 0 1.5rem;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+/* ── Brand / logo ─────────────────────────────────────────── */
+.navbar-brand {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #1e1b4b;
+    cursor: pointer;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    transition: opacity 0.2s ease;
+}
+
+.navbar-brand:hover {
+    opacity: 0.85;
+}
+
+/* ── Nav links ────────────────────────────────────────────── */
+.navbar-links {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.nav-link {
+    padding: 0.4rem 1rem;
+    border-radius: 0.625rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+    color: #6b7280;
+}
+
+.nav-link:hover {
+    background: #f5f3ff;
+    color: #7c3aed;
+}
+
+.nav-link--active {
+    background: #f5f3ff;
+    color: #7c3aed;
+    font-weight: 700;
+}
+
+/* ── Reset button ─────────────────────────────────────────── */
+.navbar-reset {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #9ca3af;
+    background: transparent;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 0.625rem;
+    padding: 0.35rem 0.875rem;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.navbar-reset:hover {
+    border-color: #fca5a5;
+    color: #ef4444;
+    background: #fef2f2;
+}
