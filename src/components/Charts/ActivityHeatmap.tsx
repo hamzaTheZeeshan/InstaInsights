@@ -1,46 +1,45 @@
+import './ActivityHeatmap.css';
 import type { ActivityStats } from '../../types/analytics';
 
 interface Props {
   activityStats: ActivityStats;
 }
 
-const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
 export default function ActivityHeatmap({ activityStats }: Props) {
-  const maxCount = Math.max(...Object.values(activityStats.byHour));
+  const maxCount = Math.max(...Object.values(activityStats.byHour), 1);
 
-  const getColor = (count: number) => {
-    if (count === 0) return 'bg-gray-800';
+  const getCellClass = (count: number) => {
+    if (count === 0) return 'heatmap-cell heatmap-cell--empty';
     const intensity = count / maxCount;
-    if (intensity < 0.25) return 'bg-purple-900';
-    if (intensity < 0.5) return 'bg-purple-700';
-    if (intensity < 0.75) return 'bg-purple-500';
-    return 'bg-purple-400';
+    if (intensity < 0.25) return 'heatmap-cell heatmap-cell--low';
+    if (intensity < 0.5)  return 'heatmap-cell heatmap-cell--mid';
+    if (intensity < 0.75) return 'heatmap-cell heatmap-cell--high';
+    return 'heatmap-cell heatmap-cell--peak';
   };
 
   return (
-    <div className="bg-gray-900 rounded-2xl p-6">
-      <h3 className="text-white font-semibold text-lg mb-4">Activity by Hour</h3>
-      <div className="flex gap-1 flex-wrap">
+    <>
+      <h3 className="chart-card-title">Activity by Hour</h3>
+      <div className="heatmap-row">
         {Array.from({ length: 24 }, (_, hour) => (
-          <div key={hour} className="flex flex-col items-center gap-1">
+          <div key={hour} className="heatmap-col">
             <div
-              className={`w-8 h-8 rounded ${getColor(activityStats.byHour[hour] ?? 0)}`}
+              className={getCellClass(activityStats.byHour[hour] ?? 0)}
               title={`${hour}:00 — ${activityStats.byHour[hour] ?? 0} messages`}
             />
-            <span className="text-gray-600 text-xs">{hour}</span>
+            <span className="heatmap-hour-label">{hour}</span>
           </div>
         ))}
       </div>
-      <div className="flex gap-2 mt-4 items-center">
-        <span className="text-gray-500 text-xs">Less</span>
-        <div className="w-4 h-4 rounded bg-gray-800" />
-        <div className="w-4 h-4 rounded bg-purple-900" />
-        <div className="w-4 h-4 rounded bg-purple-700" />
-        <div className="w-4 h-4 rounded bg-purple-500" />
-        <div className="w-4 h-4 rounded bg-purple-400" />
-        <span className="text-gray-500 text-xs">More</span>
+      <div className="heatmap-legend">
+        <span className="heatmap-legend-label">Less</span>
+        <div className="heatmap-cell heatmap-cell--empty heatmap-legend-swatch" />
+        <div className="heatmap-cell heatmap-cell--low heatmap-legend-swatch" />
+        <div className="heatmap-cell heatmap-cell--mid heatmap-legend-swatch" />
+        <div className="heatmap-cell heatmap-cell--high heatmap-legend-swatch" />
+        <div className="heatmap-cell heatmap-cell--peak heatmap-legend-swatch" />
+        <span className="heatmap-legend-label">More</span>
       </div>
-    </div>
+    </>
   );
 }

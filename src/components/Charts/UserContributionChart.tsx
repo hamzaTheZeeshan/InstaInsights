@@ -1,7 +1,7 @@
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import type { MessageStats } from '../../types/analytics';
 
-const COLORS = ['#a78bfa', '#34d399', '#f472b6', '#60a5fa', '#fbbf24'];
+const COLORS = ['#7c3aed', '#ec4899', '#3b82f6', '#0d9488', '#f59e0b'];
 
 interface Props {
   messageStats: MessageStats;
@@ -14,9 +14,9 @@ export default function UserContributionChart({ messageStats }: Props) {
   }));
 
   return (
-    <div className="bg-gray-900 rounded-2xl p-6">
-      <h3 className="text-white font-semibold text-lg mb-4">Message Contribution</h3>
-      <ResponsiveContainer width="100%" height={250}>
+    <>
+      <h3 className="chart-card-title">Message Contribution</h3>
+      <ResponsiveContainer width="100%" height={240}>
         <PieChart>
           <Pie
             data={data}
@@ -24,20 +24,32 @@ export default function UserContributionChart({ messageStats }: Props) {
             nameKey="name"
             cx="50%"
             cy="50%"
-            outerRadius={80}
-            innerRadius={40}
+            outerRadius={90}
+            innerRadius={50}
+            paddingAngle={3}
+            strokeWidth={0}
           >
             {data.map((_, index) => (
               <Cell key={index} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
           <Tooltip
-            contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px' }}
-            itemStyle={{ color: '#fff' }}
+            contentStyle={{
+              backgroundColor: '#fff',
+              border: '1px solid #e5e7eb',
+              borderRadius: '10px',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+            }}
+            labelStyle={{ color: '#1e1b4b', fontWeight: 600, fontSize: 12 }}
+            itemStyle={{ fontSize: 12 }}
           />
-          <Legend wrapperStyle={{ color: '#9ca3af' }} />
+          <Legend
+            iconType="circle"
+            iconSize={8}
+            wrapperStyle={{ fontSize: '12px', color: '#6b7280', paddingTop: '8px' }}
+          />
         </PieChart>
       </ResponsiveContainer>
-    </div>
+    </>
   );
 }

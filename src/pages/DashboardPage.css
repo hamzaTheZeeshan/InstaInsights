@@ -191,3 +191,12 @@
     padding: 1.5rem;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 }
+
+/* ── Shared chart card title ──────────────────────────────── */
+.chart-card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1e1b4b;
+    margin: 0 0 1.25rem 0;
+    letter-spacing: -0.2px;
+}

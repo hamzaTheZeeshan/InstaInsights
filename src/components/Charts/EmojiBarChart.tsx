@@ -1,4 +1,7 @@
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import {
+  BarChart, Bar, XAxis, YAxis, Tooltip,
+  ResponsiveContainer, CartesianGrid,
+} from 'recharts';
 import type { EmojiStats } from '../../types/analytics';
 
 interface Props {
@@ -9,20 +12,40 @@ export default function EmojiBarChart({ emojiStats }: Props) {
   const data = emojiStats.topEmojis.slice(0, 10);
 
   return (
-    <div className="bg-gray-900 rounded-2xl p-6">
-      <h3 className="text-white font-semibold text-lg mb-4">Top Emojis</h3>
+    <>
+      <h3 className="chart-card-title">Top Emojis</h3>
       <ResponsiveContainer width="100%" height={250}>
-        <BarChart data={data} layout="vertical">
-          <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-          <XAxis type="number" stroke="#9ca3af" tick={{ fontSize: 11 }} />
-          <YAxis dataKey="emoji" type="category" stroke="#9ca3af" tick={{ fontSize: 16 }} width={35} />
-          <Tooltip
-            contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px' }}
-            itemStyle={{ color: '#a78bfa' }}
+        <BarChart data={data} layout="vertical" margin={{ top: 0, right: 16, left: 0, bottom: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" horizontal={false} />
+          <XAxis
+            type="number"
+            stroke="#9ca3af"
+            tick={{ fontSize: 11, fill: '#9ca3af' }}
+            axisLine={false}
+            tickLine={false}
           />
-          <Bar dataKey="count" fill="#a78bfa" radius={[0, 4, 4, 0]} />
+          <YAxis
+            dataKey="emoji"
+            type="category"
+            stroke="#9ca3af"
+            tick={{ fontSize: 16, fill: '#374151' }}
+            width={36}
+            axisLine={false}
+            tickLine={false}
+          />
+          <Tooltip
+            contentStyle={{
+              backgroundColor: '#fff',
+              border: '1px solid #e5e7eb',
+              borderRadius: '10px',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+            }}
+            labelStyle={{ color: '#1e1b4b', fontWeight: 600, fontSize: 12 }}
+            itemStyle={{ color: '#ec4899', fontSize: 12 }}
+          />
+          <Bar dataKey="count" fill="#ec4899" radius={[0, 6, 6, 0]} maxBarSize={20} />
         </BarChart>
       </ResponsiveContainer>
-    </div>
+    </>
   );
 }
