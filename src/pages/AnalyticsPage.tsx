@@ -3,11 +3,12 @@ import EmojiBarChart from '../components/Charts/EmojiBarChart';
 import TopWordsChart from '../components/Charts/TopWordsChart';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { useChatData } from '../hooks/useChatData';
+import YearlyHeatmap from '../components/Charts/YearlyHeatmap';
 
 export default function AnalyticsPage() {
   const { messageStats, wordStats, emojiStats, mediaStats, responseStats } = useAnalytics();
-  const { messages } = useChatData(); 
-  
+  const { messages } = useChatData();
+
   return (
     <Layout>
       <div className="mb-8">
@@ -82,6 +83,9 @@ export default function AnalyticsPage() {
             </div>
           ))}
         </div>
+      </div>
+      <div className="mt-8">
+        <YearlyHeatmap messages={messages} />
       </div>
     </Layout>
   );
