@@ -6,6 +6,7 @@ const SYSTEM_MESSAGE_PATTERNS = [
   'liked a message',
   'reacted to your message',
   'reacted to a message',
+  'reacted to',
   'sent an attachment',
   'you sent an attachment',
   'missed a video call',
@@ -26,10 +27,19 @@ function isSystemMessage(raw: RawMessage): boolean {
   const senderLower = raw.sender_name.toLowerCase();
   if (SYSTEM_SENDERS.some(s => senderLower.includes(s))) return true;
 
-  // filter by content
   if (!raw.content) return false;
   const lower = raw.content.toLowerCase();
-  return SYSTEM_MESSAGE_PATTERNS.some(pattern => lower.includes(pattern));
+
+  // filter by content patterns
+  if (SYSTEM_MESSAGE_PATTERNS.some(pattern => lower.includes(pattern))) return true;
+
+  // catch any remaining reaction messages
+  if (lower.includes('reacted') || lower.includes('liked a')) return true;
+
+  // catch "X sent an attachment" variations
+  if (lower.includes('sent an attachment')) return true;
+
+  return false;
 }
 
 function isShareOnly(raw: RawMessage): boolean {
