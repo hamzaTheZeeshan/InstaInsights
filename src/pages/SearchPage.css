@@ -1,0 +1,314 @@
+/* ============================================================
+   SearchPage.css
+   Consistent with DashboardPage.css & AnalyticsPage.css —
+   same palette, card style, typography, and spacing system.
+   ============================================================ */
+
+/* ── Page wrapper ─────────────────────────────────────────── */
+.search-page {
+    padding: 2rem;
+    background-color: #f4f6fb;
+    min-height: 100vh;
+}
+
+/* ── Page header ──────────────────────────────────────────── */
+.search-header {
+    margin-bottom: 2rem;
+}
+
+.search-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #1e1b4b;
+    margin: 0 0 0.25rem 0;
+    letter-spacing: -0.5px;
+}
+
+.search-subtitle {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+/* ── Mode toggle buttons ──────────────────────────────────── */
+.search-mode-toggle {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.mode-btn {
+    padding: 0.5rem 1.25rem;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mode-btn--inactive {
+    background: #ffffff;
+    color: #6b7280;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+}
+
+.mode-btn--inactive:hover {
+    background: #f5f3ff;
+    color: #7c3aed;
+}
+
+.mode-btn--active {
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.35);
+}
+
+/* ── Search control card ──────────────────────────────────── */
+.search-control-card {
+    background: #ffffff;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    margin-bottom: 1.5rem;
+}
+
+/* Keyword input row */
+.search-input-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.search-input {
+    flex: 1;
+    background: #f4f6fb;
+    color: #1e1b4b;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-input::placeholder {
+    color: #9ca3af;
+}
+
+.search-input:focus {
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+.search-btn {
+    background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+.search-btn:hover {
+    opacity: 0.9;
+    box-shadow: 0 6px 16px rgba(124, 58, 237, 0.4);
+}
+
+/* Filters row */
+.search-filters-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.search-select {
+    background: #f4f6fb;
+    color: #374151;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 0.5rem 0.875rem;
+    font-size: 0.8rem;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.search-select:focus {
+    border-color: #7c3aed;
+}
+
+.search-date-range {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.search-date-label {
+    font-size: 0.8rem;
+    color: #9ca3af;
+    font-weight: 500;
+}
+
+.search-date-input {
+    background: #f4f6fb;
+    color: #374151;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 0.5rem 0.875rem;
+    font-size: 0.8rem;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-date-input:focus {
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+.search-regex-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: #6b7280;
+    cursor: pointer;
+    user-select: none;
+}
+
+.search-regex-label input[type='checkbox'] {
+    accent-color: #7c3aed;
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Date mode row */
+.search-date-mode-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* ── Results count ────────────────────────────────────────── */
+.search-results-count {
+    font-size: 0.8rem;
+    color: #9ca3af;
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+/* ── Keyword results ──────────────────────────────────────── */
+.search-results-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.search-result-card {
+    background: #ffffff;
+    border-radius: 1rem;
+    padding: 1rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    border-left: 3px solid #ede9fe;
+}
+
+.search-result-row {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.625rem;
+    margin-bottom: 0.25rem;
+    transition: background 0.15s ease;
+}
+
+.search-result-row--match {
+    background: #f5f3ff;
+    border-left: 2px solid #7c3aed;
+}
+
+.search-result-sender {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #7c3aed;
+    min-width: 6rem;
+    flex-shrink: 0;
+}
+
+.search-result-content {
+    font-size: 0.85rem;
+    color: #374151;
+    flex: 1;
+    line-height: 1.5;
+}
+
+.search-result-date {
+    font-size: 0.7rem;
+    color: #9ca3af;
+    margin-left: auto;
+    flex-shrink: 0;
+    align-self: flex-start;
+    padding-top: 0.1rem;
+}
+
+/* Highlight mark */
+.search-highlight {
+    background: #7c3aed;
+    color: #ffffff;
+    border-radius: 3px;
+    padding: 0 3px;
+}
+
+/* ── Date range results ───────────────────────────────────── */
+.date-results-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.date-result-card {
+    background: #ffffff;
+    border-radius: 0.875rem;
+    padding: 0.875rem 1.25rem;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.15s ease;
+}
+
+.date-result-card:hover {
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.09);
+}
+
+.date-result-sender {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #7c3aed;
+    min-width: 6rem;
+    flex-shrink: 0;
+}
+
+.date-result-content {
+    font-size: 0.85rem;
+    color: #374151;
+    flex: 1;
+    line-height: 1.5;
+}
+
+.date-result-content--empty {
+    color: #9ca3af;
+    font-style: italic;
+}
+
+.date-result-timestamp {
+    font-size: 0.7rem;
+    color: #9ca3af;
+    flex-shrink: 0;
+    align-self: flex-start;
+}

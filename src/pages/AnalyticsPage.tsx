@@ -1,9 +1,10 @@
+import './AnalyticsPage.css';
 import Layout from '../components/Layout/Layout';
 import EmojiBarChart from '../components/Charts/EmojiBarChart';
 import TopWordsChart from '../components/Charts/TopWordsChart';
+import YearlyHeatmap from '../components/Charts/YearlyHeatmap';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { useChatData } from '../hooks/useChatData';
-import YearlyHeatmap from '../components/Charts/YearlyHeatmap';
 
 export default function AnalyticsPage() {
   const { messageStats, wordStats, emojiStats, mediaStats, responseStats } = useAnalytics();
@@ -11,81 +12,99 @@ export default function AnalyticsPage() {
 
   return (
     <Layout>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-1">Analytics</h1>
-        <p className="text-gray-400">Deep dive into your conversation</p>
-      </div>
+      <div className="analytics-page">
 
-      {/* Message insights */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="bg-gray-900 rounded-2xl p-6">
-          <p className="text-gray-400 text-sm mb-1">Avg Message Length</p>
-          <p className="text-white text-2xl font-bold">{messageStats.averageLength} chars</p>
+        {/* Header */}
+        <div className="analytics-header">
+          <h1 className="analytics-title">Analytics</h1>
+          <p className="analytics-subtitle">Deep dive into your conversation</p>
         </div>
-        <div className="bg-gray-900 rounded-2xl p-6">
-          <p className="text-gray-400 text-sm mb-1">Fastest Replier</p>
-          <p className="text-white text-2xl font-bold">{responseStats.fastestReplier || '—'}</p>
-        </div>
-        <div className="bg-gray-900 rounded-2xl p-6">
-          <p className="text-gray-400 text-sm mb-1">Links Shared</p>
-          <p className="text-white text-2xl font-bold">{mediaStats.links.toLocaleString()}</p>
-        </div>
-      </div>
 
-      {/* Longest message + Oldest message */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        <div className="bg-gray-900 rounded-2xl p-6">
-          <p className="text-gray-400 text-sm mb-2">📏 Longest Message — {messageStats.longestMessage.sender}</p>
-          <p className="text-white text-sm leading-relaxed line-clamp-4">
-            {messageStats.longestMessage.content || '—'}
-          </p>
-          <p className="text-gray-600 text-xs mt-2">{messageStats.longestMessage.length} characters</p>
+        {/* Top insight stat cards */}
+        <div className="insight-grid">
+          <div className="insight-card insight-card--purple">
+            <p className="insight-card-label">Avg Message Length</p>
+            <p className="insight-card-value">{messageStats.averageLength} chars</p>
+          </div>
+          <div className="insight-card insight-card--pink">
+            <p className="insight-card-label">Fastest Replier</p>
+            <p className="insight-card-value">{responseStats.fastestReplier || '—'}</p>
+          </div>
+          <div className="insight-card insight-card--blue">
+            <p className="insight-card-label">Links Shared</p>
+            <p className="insight-card-value">{mediaStats.links.toLocaleString()}</p>
+          </div>
         </div>
-        <div className="bg-gray-900 rounded-2xl p-6">
-          <p className="text-gray-400 text-sm mb-2">💬 Oldest Message — {messages[0]?.sender}</p>
-          <p className="text-purple-400 text-xs font-semibold mb-2">
-            {messages[0] ? new Date(messages[0].timestamp).toLocaleDateString() : '—'}
-          </p>
-          <p className="text-white text-sm leading-relaxed line-clamp-4">
-            {messages[0]?.content || '(no text — attachment or share)'}
-          </p>
-        </div>
-      </div>
 
-      {/* Charts */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        <TopWordsChart wordStats={wordStats} />
-        <EmojiBarChart emojiStats={emojiStats} />
-      </div>
+        {/* Spotlight — longest & oldest message */}
+        <div className="spotlight-grid">
+          <div className="spotlight-card">
+            <p className="spotlight-card-meta">
+              📏 Longest Message — {messageStats.longestMessage.sender}
+            </p>
+            <p className="spotlight-card-content">
+              {messageStats.longestMessage.content || '—'}
+            </p>
+            <p className="spotlight-card-footer">
+              {messageStats.longestMessage.length} characters
+            </p>
+          </div>
 
-      {/* Top phrases */}
-      <div className="bg-gray-900 rounded-2xl p-6 mb-8">
-        <h3 className="text-white font-semibold text-lg mb-4">Top Phrases</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {wordStats.topPhrases.slice(0, 8).map(({ phrase, count }) => (
-            <div key={phrase} className="bg-gray-800 rounded-xl p-3">
-              <p className="text-white text-sm font-medium">"{phrase}"</p>
-              <p className="text-gray-500 text-xs mt-1">{count} times</p>
-            </div>
-          ))}
+          <div className="spotlight-card">
+            <p className="spotlight-card-meta">
+              💬 Oldest Message — {messages[0]?.sender}
+            </p>
+            <p className="spotlight-card-date">
+              {messages[0] ? new Date(messages[0].timestamp).toLocaleDateString() : '—'}
+            </p>
+            <p className="spotlight-card-content">
+              {messages[0]?.content || '(no text — attachment or share)'}
+            </p>
+          </div>
         </div>
-      </div>
 
-      {/* Double texts */}
-      <div className="bg-gray-900 rounded-2xl p-6">
-        <h3 className="text-white font-semibold text-lg mb-4">Double Texts</h3>
-        <div className="flex gap-6">
-          {Object.entries(responseStats.doubleTexts).map(([sender, count]) => (
-            <div key={sender}>
-              <p className="text-purple-400 font-semibold">{sender}</p>
-              <p className="text-white text-2xl font-bold">{count}</p>
-              <p className="text-gray-500 text-xs">times</p>
-            </div>
-          ))}
+        {/* Charts */}
+        <div className="analytics-charts-grid">
+          <div className="analytics-chart-card">
+            <TopWordsChart wordStats={wordStats} />
+          </div>
+          <div className="analytics-chart-card">
+            <EmojiBarChart emojiStats={emojiStats} />
+          </div>
         </div>
-      </div>
-      <div className="mt-8">
-        <YearlyHeatmap messages={messages} />
+
+        {/* Top phrases */}
+        <div className="phrases-card">
+          <h3 className="analytics-section-title">Top Phrases</h3>
+          <div className="phrases-grid">
+            {wordStats.topPhrases.slice(0, 8).map(({ phrase, count }) => (
+              <div key={phrase} className="phrase-chip">
+                <p className="phrase-chip-text">"{phrase}"</p>
+                <p className="phrase-chip-count">{count} times</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Double texts */}
+        <div className="double-texts-card">
+          <h3 className="analytics-section-title">Double Texts</h3>
+          <div className="double-texts-row">
+            {Object.entries(responseStats.doubleTexts).map(([sender, count]) => (
+              <div key={sender}>
+                <p className="double-text-item-name">{sender}</p>
+                <p className="double-text-item-count">{count}</p>
+                <p className="double-text-item-label">times</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Yearly Heatmap */}
+        <div className="yearly-heatmap-card">
+          <YearlyHeatmap messages={messages} />
+        </div>
+
       </div>
     </Layout>
   );
