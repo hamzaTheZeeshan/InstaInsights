@@ -31,8 +31,22 @@ export default function AnalyticsPage() {
             <p className="insight-card-value">{responseStats.fastestReplier || '—'}</p>
           </div>
           <div className="insight-card insight-card--blue">
-            <p className="insight-card-label">Links Shared</p>
-            <p className="insight-card-value">{mediaStats.links.toLocaleString()}</p>
+            <p className="insight-card-label">Total Reels Shared</p>
+            <p className="insight-card-value">{mediaStats.reels.toLocaleString()}</p>
+          </div>
+        </div>
+
+        {/* Reels per person */}
+        <div className="double-texts-card">
+          <h3 className="analytics-section-title">🎬 Reels Sent Per Person</h3>
+          <div className="double-texts-row">
+            {Object.entries(mediaStats.perParticipant).map(([sender, stats]) => (
+              <div key={sender}>
+                <p className="double-text-item-name">{sender}</p>
+                <p className="double-text-item-count">{stats.reels}</p>
+                <p className="double-text-item-label">reels</p>
+              </div>
+            ))}
           </div>
         </div>
 

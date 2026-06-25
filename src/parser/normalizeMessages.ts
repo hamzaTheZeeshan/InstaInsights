@@ -2,27 +2,15 @@ import type { RawInstagramExport, RawMessage } from '../types/instagram';
 import type { Message, Attachment } from '../types/message';
 import { decodeInstagramText } from './instagramParser';
 
-const SYSTEM_MESSAGE_PATTERNS = [
-  'liked a message',
-  'reacted to your message',
-  'reacted to a message',
-  'reacted to',
-  'sent an attachment',
-  'you sent an attachment',
-  'missed a video call',
-  'missed a voice call',
-  'started a video call',
-  'started a voice call',
-  'in a call',
-  'ended the video call',
-];
-
-const SYSTEM_SENDERS = [
-  'meta ai',
-  'instagram',
-];
+const SYSTEM_SENDERS = ['meta ai', 'instagram'];
 
 function isSystemMessage(raw: RawMessage): boolean {
+  // never filter media messages — they are real messages
+  if (raw.photos || raw.videos || raw.audio_files) return false;
+
+  // never filter reel shares — handled separately
+  if (raw.share?.link) return false;
+
   // filter by sender
   const senderLower = raw.sender_name.toLowerCase();
   if (SYSTEM_SENDERS.some(s => senderLower.includes(s))) return true;
@@ -30,23 +18,21 @@ function isSystemMessage(raw: RawMessage): boolean {
   if (!raw.content) return false;
   const lower = raw.content.toLowerCase();
 
-  // filter by content patterns
-  if (SYSTEM_MESSAGE_PATTERNS.some(pattern => lower.includes(pattern))) return true;
-
-  // catch any remaining reaction messages
-  if (lower.includes('reacted') || lower.includes('liked a')) return true;
-
-  // catch "X sent an attachment" variations
+  if (lower.includes('reacted')) return true;
+  if (lower.includes('liked a')) return true;
   if (lower.includes('sent an attachment')) return true;
+  if (lower.includes('missed a video call')) return true;
+  if (lower.includes('missed a voice call')) return true;
+  if (lower.includes('started a video call')) return true;
+  if (lower.includes('started a voice call')) return true;
+  if (lower.includes('ended the video call')) return true;
+  if (lower.includes('in a call')) return true;
 
   return false;
 }
 
-function isShareOnly(raw: RawMessage): boolean {
-  return (
-    !!raw.share?.link &&
-    (!raw.content || raw.content === 'You sent an attachment.')
-  );
+function isReelShare(raw: RawMessage): boolean {
+  return !!raw.share?.link;
 }
 
 function decodeReaction(reaction: string): string {
@@ -68,41 +54,34 @@ function extractAttachments(raw: RawMessage): Attachment[] {
 }
 
 function extractContent(raw: RawMessage): string {
-  if (isShareOnly(raw)) return '';
-  if (isSystemMessage(raw)) return '';
-  if (raw.content && raw.content !== 'You sent an attachment.') {
-    return decodeInstagramText(raw.content);
-  }
-  return '';
+  if (!raw.content) return '';
+  if (raw.content === 'You sent an attachment.') return '';
+  return decodeInstagramText(raw.content);
+}
+
+function processMessage(raw: RawMessage, id: string): Message {
+  return {
+    id,
+    sender: decodeInstagramText(raw.sender_name),
+    timestamp: raw.timestamp_ms,
+    content: extractContent(raw),
+    reactions: (raw.reactions ?? []).map(r => decodeReaction(r.reaction)),
+    attachments: extractAttachments(raw),
+    isUnsent: raw.is_unsent_image_by_messenger_kid_parent ?? false,
+  };
 }
 
 export function normalizeMessages(data: RawInstagramExport): Message[] {
   return data.messages
-    .filter(raw => !isSystemMessage(raw))
-    .map((raw, index) => ({
-      id: `msg_${index}_${raw.timestamp_ms}`,
-      sender: decodeInstagramText(raw.sender_name),
-      timestamp: raw.timestamp_ms,
-      content: extractContent(raw),
-      reactions: (raw.reactions ?? []).map(r => decodeReaction(r.reaction)),
-      attachments: extractAttachments(raw),
-      isUnsent: raw.is_unsent_image_by_messenger_kid_parent ?? false,
-    }));
+    .filter(raw => !isSystemMessage(raw) && !isReelShare(raw))
+    .map((raw, index) => processMessage(raw, `msg_${index}_${raw.timestamp_ms}`));
 }
 
 export function mergeAndNormalizeExports(exports: RawInstagramExport[]): Message[] {
   const allMessages = exports.flatMap((data, exportIndex) =>
     data.messages
-      .filter(raw => !isSystemMessage(raw))
-      .map((raw, index) => ({
-        id: `msg_${exportIndex}_${index}_${raw.timestamp_ms}`,
-        sender: decodeInstagramText(raw.sender_name),
-        timestamp: raw.timestamp_ms,
-        content: extractContent(raw),
-        reactions: (raw.reactions ?? []).map(r => decodeReaction(r.reaction)),
-        attachments: extractAttachments(raw),
-        isUnsent: raw.is_unsent_image_by_messenger_kid_parent ?? false,
-      }))
+      .filter(raw => !isSystemMessage(raw) && !isReelShare(raw))
+      .map((raw, index) => processMessage(raw, `msg_${exportIndex}_${index}_${raw.timestamp_ms}`))
   );
 
   const seen = new Set<number>();
@@ -113,4 +92,16 @@ export function mergeAndNormalizeExports(exports: RawInstagramExport[]): Message
       return true;
     })
     .sort((a, b) => a.timestamp - b.timestamp);
+}
+
+export function extractReelShares(exports: RawInstagramExport[]): { sender: string; uri: string; timestamp: number }[] {
+  return exports.flatMap(data =>
+    data.messages
+      .filter(raw => isReelShare(raw) && !isSystemMessage(raw))
+      .map(raw => ({
+        sender: decodeInstagramText(raw.sender_name),
+        uri: raw.share!.link!,
+        timestamp: raw.timestamp_ms,
+      }))
+  );
 }

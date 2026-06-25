@@ -40,7 +40,8 @@ export interface MediaStats {
   videos: number;
   audio: number;
   links: number;
-  perParticipant: Record<string, { photos: number; videos: number; audio: number; links: number }>;
+  reels: number;
+  perParticipant: Record<string, { photos: number; videos: number; audio: number; links: number; reels: number }>;
 }
 
 export interface AllAnalytics {

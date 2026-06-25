@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { parseInstagramExport } from '../../parser/instagramParser';
-import { mergeAndNormalizeExports } from '../../parser/normalizeMessages';
+import { mergeAndNormalizeExports, extractReelShares } from '../../parser/normalizeMessages';
 import { useChatContext } from '../../context/ChatContext';
 import type { RawInstagramExport } from '../../types/instagram';
 
@@ -10,7 +10,7 @@ export default function DropZone() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [fileCount, setFileCount] = useState(0);
-  const { setMessages, setParticipants } = useChatContext();
+  const { setMessages, setParticipants, setReelShares } = useChatContext();
   const navigate = useNavigate();
 
   const processFiles = useCallback((files: File[]) => {
@@ -43,15 +43,17 @@ export default function DropZone() {
       .then(exports => {
         const participants = exports[0].participants.map(p => p.name);
         const msgs = mergeAndNormalizeExports(exports);
+        const reels = extractReelShares(exports);
         setMessages(msgs);
         setParticipants(participants);
+        setReelShares(reels);
         navigate('/dashboard');
       })
       .catch(err => {
         setError(err instanceof Error ? err.message : 'Failed to parse files.');
         setIsLoading(false);
       });
-  }, [setMessages, setParticipants, navigate]);
+  }, [setMessages, setParticipants, setReelShares, navigate]);
 
   const onDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
