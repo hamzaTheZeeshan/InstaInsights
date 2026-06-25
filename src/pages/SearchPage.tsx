@@ -1,17 +1,42 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Layout from '../components/Layout/Layout';
 import { useSearch } from '../hooks/useSearch';
 import { useChatData } from '../hooks/useChatData';
 import { highlightText } from '../search/regexSearch';
 
+type SearchMode = 'keyword' | 'date';
+
 export default function SearchPage() {
-  const { participants } = useChatData();
+  const { participants, messages } = useChatData();
   const { results, options, setOptions } = useSearch();
   const [inputValue, setInputValue] = useState('');
+  const [mode, setSearchMode] = useState<SearchMode>('keyword');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [appliedStart, setAppliedStart] = useState('');
+  const [appliedEnd, setAppliedEnd] = useState('');
 
   const handleSearch = () => {
     setOptions({ ...options, query: inputValue });
   };
+
+  const dateResults = useMemo(() => {
+    if (mode !== 'date' || (!appliedStart && !appliedEnd)) return [];
+    return messages.filter(m => {
+      const msgDate = new Date(m.timestamp);
+      if (appliedStart) {
+        const start = new Date(appliedStart);
+        start.setHours(0, 0, 0, 0);
+        if (msgDate < start) return false;
+      }
+      if (appliedEnd) {
+        const end = new Date(appliedEnd);
+        end.setHours(23, 59, 59, 999);
+        if (msgDate > end) return false;
+      }
+      return true;
+    });
+  }, [messages, appliedStart, appliedEnd, mode]);
 
   const renderHighlighted = (content: string) => {
     const highlighted = highlightText(content, options.query, options.useRegex);
@@ -30,104 +55,189 @@ export default function SearchPage() {
         <p className="text-gray-400">Search through your messages</p>
       </div>
 
-      {/* Search bar */}
-      <div className="bg-gray-900 rounded-2xl p-6 mb-6">
-        <div className="flex gap-3 mb-4">
-          <input
-            type="text"
-            value={inputValue}
-            onChange={e => setInputValue(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && handleSearch()}
-            placeholder="Search messages..."
-            className="flex-1 bg-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500"
-          />
-          <button
-            onClick={handleSearch}
-            className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-medium transition-colors"
-          >
-            Search
-          </button>
-        </div>
-
-        {/* Filters */}
-        <div className="flex gap-4 flex-wrap">
-          <select
-            value={options.sender}
-            onChange={e => setOptions({ ...options, sender: e.target.value })}
-            className="bg-gray-800 text-gray-300 rounded-xl px-4 py-2 outline-none text-sm"
-          >
-            <option value="">All participants</option>
-            {participants.map(p => (
-              <option key={p} value={p}>{p}</option>
-            ))}
-          </select>
-
-          <label className="flex items-center gap-2 text-gray-400 text-sm cursor-pointer">
-            <input
-              type="checkbox"
-              checked={options.useRegex}
-              onChange={e => setOptions({ ...options, useRegex: e.target.checked })}
-              className="accent-purple-500"
-            />
-            Regex
-          </label>
-
-          <div className="flex items-center gap-2">
-            <span className="text-gray-500 text-sm">From</span>
-            <input
-              type="date"
-              onChange={e => setOptions({
-                ...options,
-                startDate: e.target.value ? new Date(e.target.value).getTime() : null
-              })}
-              className="bg-gray-800 text-gray-300 rounded-xl px-3 py-2 outline-none text-sm"
-            />
-            <span className="text-gray-500 text-sm">To</span>
-            <input
-              type="date"
-              onChange={e => setOptions({
-                ...options,
-                endDate: e.target.value ? new Date(e.target.value + 'T23:59:59').getTime() : null
-              })}
-              className="bg-gray-800 text-gray-300 rounded-xl px-3 py-2 outline-none text-sm"
-            />
-          </div>
-        </div>
+      {/* Mode toggle */}
+      <div className="flex gap-2 mb-6">
+        <button
+          onClick={() => setSearchMode('keyword')}
+          className={`px-5 py-2 rounded-xl text-sm font-medium transition-colors ${
+            mode === 'keyword'
+              ? 'bg-purple-600 text-white'
+              : 'bg-gray-800 text-gray-400 hover:text-white'
+          }`}
+        >
+          🔍 Keyword Search
+        </button>
+        <button
+          onClick={() => setSearchMode('date')}
+          className={`px-5 py-2 rounded-xl text-sm font-medium transition-colors ${
+            mode === 'date'
+              ? 'bg-purple-600 text-white'
+              : 'bg-gray-800 text-gray-400 hover:text-white'
+          }`}
+        >
+          📅 Date Range
+        </button>
       </div>
 
-      {/* Results */}
-      {options.query && (
+      {/* Keyword mode */}
+      {mode === 'keyword' && (
+        <div className="bg-gray-900 rounded-2xl p-6 mb-6">
+          <div className="flex gap-3 mb-4">
+            <input
+              type="text"
+              value={inputValue}
+              onChange={e => setInputValue(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleSearch()}
+              placeholder="Search messages..."
+              className="flex-1 bg-gray-800 text-white rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-500"
+            />
+            <button
+              onClick={handleSearch}
+              className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-medium transition-colors"
+            >
+              Search
+            </button>
+          </div>
+
+          <div className="flex gap-4 flex-wrap items-center">
+            <select
+              value={options.sender}
+              onChange={e => setOptions({ ...options, sender: e.target.value })}
+              className="bg-gray-800 text-gray-300 rounded-xl px-4 py-2 outline-none text-sm"
+            >
+              <option value="">All participants</option>
+              {participants.map(p => (
+                <option key={p} value={p}>{p}</option>
+              ))}
+            </select>
+
+            <div className="flex items-center gap-2">
+              <span className="text-gray-500 text-sm">From</span>
+              <input
+                type="date"
+                onChange={e => setOptions({
+                  ...options,
+                  startDate: e.target.value ? new Date(e.target.value).getTime() : null
+                })}
+                className="bg-gray-800 text-gray-300 rounded-xl px-3 py-2 outline-none text-sm"
+              />
+              <span className="text-gray-500 text-sm">To</span>
+              <input
+                type="date"
+                onChange={e => setOptions({
+                  ...options,
+                  endDate: e.target.value ? new Date(e.target.value + 'T23:59:59').getTime() : null
+                })}
+                className="bg-gray-800 text-gray-300 rounded-xl px-3 py-2 outline-none text-sm"
+              />
+            </div>
+
+            <label className="flex items-center gap-2 text-gray-400 text-sm cursor-pointer">
+              <input
+                type="checkbox"
+                checked={options.useRegex}
+                onChange={e => setOptions({ ...options, useRegex: e.target.checked })}
+                className="accent-purple-500"
+              />
+              Regex
+            </label>
+          </div>
+        </div>
+      )}
+
+      {/* Date mode */}
+      {mode === 'date' && (
+        <div className="bg-gray-900 rounded-2xl p-6 mb-6">
+          <div className="flex gap-4 items-center flex-wrap">
+            <div className="flex items-center gap-2">
+              <span className="text-gray-400 text-sm">From</span>
+              <input
+                type="date"
+                value={startDate}
+                onChange={e => setStartDate(e.target.value)}
+                className="bg-gray-800 text-gray-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-gray-400 text-sm">To</span>
+              <input
+                type="date"
+                value={endDate}
+                onChange={e => setEndDate(e.target.value)}
+                className="bg-gray-800 text-gray-300 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+              />
+            </div>
+            <button
+              onClick={() => { setAppliedStart(startDate); setAppliedEnd(endDate); }}
+              className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-medium transition-colors"
+            >
+              Search
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Results count */}
+      {mode === 'keyword' && options.query && (
         <p className="text-gray-500 text-sm mb-4">
           {results.length} result{results.length !== 1 ? 's' : ''}
           {results.length === 200 ? ' (capped at 200)' : ''}
         </p>
       )}
+      {mode === 'date' && (appliedStart || appliedEnd) && (
+        <p className="text-gray-500 text-sm mb-4">
+          {dateResults.length} message{dateResults.length !== 1 ? 's' : ''} in this range
+        </p>
+      )}
 
-      <div className="flex flex-col gap-4">
-        {results.map((result, i) => (
-          <div key={i} className="bg-gray-900 rounded-2xl p-4">
-            {result.context.map((msg, j) => (
-              <div
-                key={msg.id}
-                className={`flex gap-3 py-2 px-3 rounded-xl mb-1 ${j === result.matchIndex ? 'bg-gray-800' : ''
+      {/* Keyword results */}
+      {mode === 'keyword' && (
+        <div className="flex flex-col gap-4">
+          {results.map((result, i) => (
+            <div key={i} className="bg-gray-900 rounded-2xl p-4">
+              {result.context.map((msg, j) => (
+                <div
+                  key={msg.id}
+                  className={`flex gap-3 py-2 px-3 rounded-xl mb-1 ${
+                    j === result.matchIndex ? 'bg-gray-800' : ''
                   }`}
-              >
-                <span className="text-purple-400 text-sm font-semibold min-w-24 shrink-0">
-                  {msg.sender.split(' ')[0]}
-                </span>
-                <span className="text-gray-300 text-sm">
-                  {j === result.matchIndex
-                    ? renderHighlighted(msg.content)
-                    : msg.content}
-                </span>
-                <span className="text-gray-600 text-xs ml-auto shrink-0">
-                  {new Date(msg.timestamp).toLocaleDateString()}
-                </span>
-              </div>
-            ))}
-          </div>
-        ))}
-      </div>
+                >
+                  <span className="text-purple-400 text-sm font-semibold min-w-24 shrink-0">
+                    {msg.sender.split(' ')[0]}
+                  </span>
+                  <span className="text-gray-300 text-sm">
+                    {j === result.matchIndex
+                      ? renderHighlighted(msg.content)
+                      : msg.content}
+                  </span>
+                  <span className="text-gray-600 text-xs ml-auto shrink-0">
+                    {new Date(msg.timestamp).toLocaleDateString()}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Date results */}
+      {mode === 'date' && (
+        <div className="flex flex-col gap-2">
+          {dateResults.map(msg => (
+            <div key={msg.id} className="bg-gray-900 rounded-2xl px-5 py-3 flex gap-3 items-start">
+              <span className="text-purple-400 text-sm font-semibold min-w-24 shrink-0">
+                {msg.sender.split(' ')[0]}
+              </span>
+              <span className="text-gray-300 text-sm flex-1">
+                {msg.content || <span className="text-gray-600 italic">attachment / share</span>}
+              </span>
+              <span className="text-gray-600 text-xs shrink-0">
+                {new Date(msg.timestamp).toLocaleString()}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
     </Layout>
   );
 }
