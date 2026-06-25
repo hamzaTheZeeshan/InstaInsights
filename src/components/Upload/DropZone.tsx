@@ -1,3 +1,4 @@
+import './DropZone.css';
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { parseInstagramExport } from '../../parser/instagramParser';
@@ -19,7 +20,6 @@ export default function DropZone() {
       setError('Please upload at least one .json file.');
       return;
     }
-
     setIsLoading(true);
     setError(null);
     setFileCount(jsonFiles.length);
@@ -58,51 +58,93 @@ export default function DropZone() {
   const onDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    const files = Array.from(e.dataTransfer.files);
-    processFiles(files);
+    processFiles(Array.from(e.dataTransfer.files));
   }, [processFiles]);
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files ?? []);
-    processFiles(files);
+    processFiles(Array.from(e.target.files ?? []));
   };
 
   return (
-    <div className="w-full max-w-lg">
-      <div
-        onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-        onDragLeave={() => setIsDragging(false)}
-        onDrop={onDrop}
-        className={`border-2 border-dashed rounded-2xl p-16 text-center cursor-pointer transition-all duration-200
-          ${isDragging
-            ? 'border-purple-500 bg-purple-500/10'
-            : 'border-gray-700 bg-gray-900 hover:border-purple-600 hover:bg-gray-800'
-          }`}
-        onClick={() => document.getElementById('fileInput')?.click()}
-      >
-        <div className="text-5xl mb-4">📂</div>
-        <p className="text-white font-semibold text-lg">Drop your JSON files here</p>
-        <p className="text-gray-500 text-sm mt-1">Select multiple files at once — we'll merge them</p>
-        <p className="text-gray-600 text-xs mt-1">or click to browse</p>
-        <input
-          id="fileInput"
-          type="file"
-          accept=".json"
-          multiple
-          className="hidden"
-          onChange={onFileChange}
-        />
+    <div className="upload-page">
+      <div className="upload-hero">
+        <h1 className="upload-hero-title">InstaInsights</h1>
+        <p className="upload-hero-subtitle">Upload your Instagram chat export and get deep insights.</p>
+        <p className="upload-hero-privacy">🔒 Everything stays on your device. Nothing is uploaded.</p>
       </div>
 
-      {isLoading && (
-        <p className="text-purple-400 text-center mt-4 animate-pulse">
-          Parsing {fileCount} file{fileCount > 1 ? 's' : ''} and merging...
-        </p>
-      )}
+      <div className="dropzone-wrapper">
+        <div
+          className={`dropzone-card ${isDragging ? 'dropzone-card--dragging' : ''}`}
+          onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+          onDragLeave={() => setIsDragging(false)}
+          onDrop={onDrop}
+          onClick={() => document.getElementById('fileInput')?.click()}
+        >
+          <span className="dropzone-icon">📂</span>
+          <p className="dropzone-title">Drop your JSON files here</p>
+          <p className="dropzone-subtitle">Select multiple files at once — we'll merge them</p>
+          <p className="dropzone-hint">or click to browse</p>
+          <input
+            id="fileInput"
+            type="file"
+            accept=".json"
+            multiple
+            style={{ display: 'none' }}
+            onChange={onFileChange}
+          />
+        </div>
 
-      {error && (
-        <p className="text-red-400 text-center mt-4">{error}</p>
-      )}
+        {isLoading && (
+          <p className="dropzone-loading">
+            ⏳ Parsing {fileCount} file{fileCount > 1 ? 's' : ''} and merging...
+          </p>
+        )}
+
+        {error && (
+          <p className="dropzone-error">⚠️ {error}</p>
+        )}
+      </div>
+
+      <div className="upload-features">
+        {[
+          '📊 Message Analytics',
+          '🔍 Smart Search',
+          '🎬 Reel Counts',
+          '📅 Activity Heatmap',
+          '😄 Emoji Stats',
+          '💬 Word Frequency',
+        ].map(f => (
+          <span key={f} className="feature-pill">{f}</span>
+        ))}
+      </div>
+
+      <div className="instructions-card">
+        <p className="instructions-title">📥 How to export your Instagram messages</p>
+        <p className="instructions-subtitle">
+          To download only your messages instead of your entire account data, use the
+          "Download Your Information" tool in the app. Filtering by "Messages" dramatically
+          reduces file size and processing time.
+        </p>
+        <div className="instructions-steps">
+          {[
+            <><strong>Open the Instagram app</strong> and tap your <strong>Profile picture</strong> in the bottom right corner.</>,
+            <>Tap the <strong>Hamburger Menu</strong> (three horizontal lines) in the top-right, then select <strong>Settings and Activity</strong>.</>,
+            <>Tap <strong>Accounts Center</strong> and go to <strong>Your Information and Permissions</strong>.</>,
+            <>Select <strong>Download Your Information</strong> (or Export Your Information) and tap <strong>Create Export</strong>.</>,
+            <>Choose your Instagram account and tap <strong>Next</strong>.</>,
+            <>Choose <strong>Some of Your Information</strong>, scroll down, and check only <strong>Messages</strong>. Tap <strong>Next</strong>.</>,
+            <>Select <strong>Download to device</strong>.</>,
+            <>Customize your <strong>Date range</strong> to All Time and choose <strong>JSON</strong> as your file format.</>,
+            <>Enter your email, set media quality to <strong>High</strong>, and tap <strong>Create files</strong> or <strong>Start export</strong>.</>,
+          ].map((step, i) => (
+            <div key={i} className="instructions-step">
+              <span className="step-number">{i + 1}</span>
+              <p className="step-text">{step}</p>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

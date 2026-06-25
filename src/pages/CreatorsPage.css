@@ -1,0 +1,170 @@
+/* ── Page wrapper ─────────────────────────────────────────── */
+.creators-page {
+  padding: 2rem;
+  background-color: #f4f6fb;
+  min-height: 100vh;
+}
+
+/* ── Header ───────────────────────────────────────────────── */
+.creators-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.creators-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #1e1b4b;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.5px;
+}
+
+.creators-subtitle {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin: 0 auto;
+  max-width: 480px;
+  line-height: 1.6;
+}
+
+/* ── Creator cards grid ───────────────────────────────────── */
+.creators-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  max-width: 860px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 640px) {
+  .creators-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.creator-card {
+  background: #ffffff;
+  border-radius: 1.25rem;
+  padding: 2rem 1.75rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.creator-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* ── Avatar ───────────────────────────────────────────────── */
+.creator-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 auto 1.25rem auto;
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.25);
+}
+
+/* ── Text ─────────────────────────────────────────────────── */
+.creator-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1e1b4b;
+  margin: 0 0 0.25rem 0;
+}
+
+.creator-role {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #7c3aed;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 1rem 0;
+}
+
+.creator-bio {
+  font-size: 0.85rem;
+  color: #6b7280;
+  line-height: 1.65;
+  margin: 0 0 1.5rem 0;
+}
+
+/* ── Links ────────────────────────────────────────────────── */
+.creator-links {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.creator-link {
+  padding: 0.45rem 1.1rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.creator-link:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+
+.creator-link--github {
+  background: #1e1b4b;
+  color: #fff;
+}
+
+.creator-link--linkedin {
+  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+  color: #fff;
+}
+
+/* ── Project card ─────────────────────────────────────────── */
+.creators-project-card {
+  background: #ffffff;
+  border-radius: 1.25rem;
+  padding: 2rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  max-width: 860px;
+  margin: 0 auto;
+  border-top: 3px solid #7c3aed;
+}
+
+.creators-project-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e1b4b;
+  margin: 0 0 0.75rem 0;
+}
+
+.creators-project-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+  line-height: 1.7;
+  margin: 0 0 1.25rem 0;
+}
+
+.creators-project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.project-tag {
+  background: #f5f3ff;
+  border: 1px solid #ede9fe;
+  color: #5b21b6;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.3rem 0.85rem;
+  border-radius: 999px;
+}

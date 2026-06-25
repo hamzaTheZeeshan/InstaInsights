@@ -7,11 +7,12 @@ export default function Navbar() {
   const location = useLocation();
   const { reset } = useChatContext();
 
-  const links = [
-    { path: '/dashboard', label: 'Dashboard' },
-    { path: '/analytics', label: 'Analytics' },
-    { path: '/search', label: 'Search' },
-  ];
+ const links = [
+  { path: '/dashboard', label: 'Dashboard' },
+  { path: '/analytics', label: 'Analytics' },
+  { path: '/search', label: 'Search' },
+  { path: '/creators', label: 'About The Creators' },
+];
 
   const handleReset = () => {
     reset();

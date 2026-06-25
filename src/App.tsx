@@ -3,6 +3,7 @@ import HomePage from './pages/HomePage';
 import DashboardPage from './pages/DashboardPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import SearchPage from './pages/SearchPage';
+import CreatorsPage from './pages/CreatorsPage';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/analytics" element={<AnalyticsPage />} />
         <Route path="/search" element={<SearchPage />} />
+        <Route path="/creators" element={<CreatorsPage />} />
       </Routes>
     </BrowserRouter>
   );
