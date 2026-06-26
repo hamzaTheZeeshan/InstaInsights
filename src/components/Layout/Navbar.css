@@ -84,3 +84,112 @@
     color: #ef4444;
     background: #fef2f2;
 }
+
+/* Mobile-duplicate reset button is hidden by default; only shown
+   inside the dropdown panel under the mobile breakpoint below */
+.navbar-reset--mobile {
+    display: none;
+}
+
+/* ── Mobile menu toggle (hamburger) ──────────────────────────
+   Hidden on desktop. Needs a <button class="navbar-toggle"> with
+   3 spans inside for the hamburger lines — see note below. */
+.navbar-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    border-radius: 0.5rem;
+}
+
+.navbar-toggle:hover {
+    background: #f5f3ff;
+}
+
+.navbar-toggle-bar {
+    width: 20px;
+    height: 2px;
+    background: #1e1b4b;
+    border-radius: 2px;
+    margin: 0 auto;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+/* Animate into an "X" when menu is open — toggle this class via JS/React state */
+.navbar-toggle--open .navbar-toggle-bar:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+}
+
+.navbar-toggle--open .navbar-toggle-bar:nth-child(2) {
+    opacity: 0;
+}
+
+.navbar-toggle--open .navbar-toggle-bar:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+}
+
+/* ============================================================
+   Mobile responsive overrides
+   ============================================================ */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 0 1rem;
+    }
+
+    .navbar-brand {
+        font-size: 1.05rem;
+    }
+
+    /* Show the hamburger, hide the inline reset label text isn't
+       removed — reset button moves into the dropdown panel below */
+    .navbar-toggle {
+        display: flex;
+    }
+
+    /* Links collapse into a dropdown panel instead of a row.
+       Default: hidden. Add `.navbar-links--open` (via JS/React state)
+       to reveal it. */
+    .navbar-links {
+        display: none;
+        position: absolute;
+        top: 64px;
+        left: 0;
+        right: 0;
+        background: #ffffff;
+        flex-direction: column;
+        gap: 0.25rem;
+        padding: 0.75rem 1rem 1rem;
+        border-bottom: 1px solid #e5e7eb;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .navbar-links--open {
+        display: flex;
+    }
+
+    .nav-link {
+        width: 100%;
+        text-align: left;
+        padding: 0.625rem 0.875rem;
+    }
+
+    /* Two reset buttons exist in the markup — one for desktop (top bar),
+       one for mobile (inside the dropdown). Show only the relevant one. */
+    .navbar-reset--desktop {
+        display: none;
+    }
+
+    .navbar-reset--mobile {
+        display: block;
+        width: 100%;
+        text-align: center;
+        margin-top: 0.5rem;
+        padding: 0.5rem 0.875rem;
+    }
+}
