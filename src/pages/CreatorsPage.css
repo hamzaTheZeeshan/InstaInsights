@@ -168,3 +168,53 @@
   padding: 0.3rem 0.85rem;
   border-radius: 999px;
 }
+
+/* ============================================================
+   Mobile responsive overrides
+   ============================================================ */
+@media (max-width: 640px) {
+  .creators-page {
+    padding: 1.25rem 1rem;
+  }
+
+  .creators-header {
+    margin-bottom: 1.75rem;
+  }
+
+  .creators-title {
+    font-size: 1.5rem;
+  }
+
+  .creators-subtitle {
+    font-size: 0.85rem;
+    max-width: 100%;
+  }
+
+  .creators-grid {
+    gap: 1rem;
+  }
+
+  .creator-card {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .creator-avatar {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .creator-links {
+    flex-wrap: wrap;
+  }
+
+  .creator-link {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+
+  .creators-project-card {
+    padding: 1.5rem 1.25rem;
+  }
+}

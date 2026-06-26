@@ -282,3 +282,96 @@
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
     margin-top: 1.5rem;
 }
+
+/* ============================================================
+   Mobile responsive overrides
+   ============================================================ */
+@media (max-width: 640px) {
+    .analytics-page {
+        padding: 1.25rem 1rem;
+    }
+
+    .analytics-title {
+        font-size: 1.5rem;
+    }
+
+    .analytics-subtitle {
+        font-size: 0.85rem;
+    }
+
+    .insight-grid {
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .insight-card {
+        padding: 1rem 1.1rem;
+    }
+
+    .insight-card-label {
+        font-size: 0.68rem;
+    }
+
+    .insight-card-value {
+        font-size: 1.4rem;
+    }
+
+    .spotlight-grid {
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .spotlight-card {
+        padding: 1.1rem;
+    }
+
+    .analytics-charts-grid {
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .analytics-chart-card {
+        padding: 1.1rem;
+        overflow-x: auto;
+    }
+
+    .phrases-card {
+        padding: 1.1rem;
+        margin-bottom: 1.25rem;
+    }
+
+    /* Phrase chips: 1 per row so text never wraps awkwardly */
+    .phrases-grid {
+        grid-template-columns: 1fr;
+        gap: 0.6rem;
+    }
+
+    .double-texts-card {
+        padding: 1.1rem;
+    }
+
+    /* The two double-text stat blocks were overflowing in a
+       non-wrapping flex row — wrap and let them share width evenly */
+    .double-texts-row {
+        flex-wrap: wrap;
+        gap: 1.25rem;
+    }
+
+    .double-text-item-count {
+        font-size: 1.4rem;
+    }
+
+    .yearly-heatmap-card {
+        padding: 1.1rem;
+        margin-top: 1.25rem;
+        overflow-x: auto;
+    }
+}
+
+@media (max-width: 480px) {
+
+    /* Restore 2 columns for phrase chips once there's a touch more room */
+    .phrases-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

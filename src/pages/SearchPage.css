@@ -312,3 +312,110 @@
     flex-shrink: 0;
     align-self: flex-start;
 }
+
+/* ============================================================
+   Mobile responsive overrides
+   ============================================================ */
+@media (max-width: 640px) {
+    .search-page {
+        padding: 1.25rem 1rem;
+    }
+
+    .search-title {
+        font-size: 1.5rem;
+    }
+
+    .search-subtitle {
+        font-size: 0.85rem;
+    }
+
+    .search-mode-toggle {
+        flex-wrap: wrap;
+    }
+
+    .mode-btn {
+        padding: 0.5rem 1rem;
+        flex: 1 1 auto;
+        text-align: center;
+    }
+
+    .search-control-card {
+        padding: 1.1rem;
+    }
+
+    /* Input + button were stuck on one row and overflowing on phones —
+       stack them and let the button go full width */
+    .search-input-row {
+        flex-direction: column;
+        gap: 0.6rem;
+    }
+
+    .search-btn {
+        width: 100%;
+    }
+
+    /* Filters need to wrap onto their own lines with full-width controls,
+       not be squeezed into a single overflowing row */
+    .search-filters-row,
+    .search-date-mode-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.6rem;
+    }
+
+    .search-select,
+    .search-date-input {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .search-date-range {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.4rem;
+    }
+
+    .search-result-card {
+        padding: 0.85rem;
+    }
+
+    /* Sender/content/date were forced onto one flex row with a fixed
+       6rem min-width sender — this overflowed badly on phones.
+       Stack sender+date on top, content below. */
+    .search-result-row {
+        flex-wrap: wrap;
+        gap: 0.3rem 0.6rem;
+    }
+
+    .search-result-sender {
+        min-width: 0;
+    }
+
+    .search-result-content {
+        flex-basis: 100%;
+        order: 3;
+    }
+
+    .search-result-date {
+        margin-left: auto;
+    }
+
+    .date-result-card {
+        flex-wrap: wrap;
+        padding: 0.75rem 1rem;
+        gap: 0.3rem 0.6rem;
+    }
+
+    .date-result-sender {
+        min-width: 0;
+    }
+
+    .date-result-content {
+        flex-basis: 100%;
+        order: 3;
+    }
+
+    .date-result-timestamp {
+        margin-left: auto;
+    }
+}

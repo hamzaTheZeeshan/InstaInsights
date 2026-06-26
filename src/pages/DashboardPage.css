@@ -200,3 +200,71 @@
     margin: 0 0 1.25rem 0;
     letter-spacing: -0.2px;
 }
+
+/* ============================================================
+   Mobile responsive overrides
+   ============================================================ */
+@media (max-width: 640px) {
+    .dashboard-page {
+        padding: 1.25rem 1rem;
+    }
+
+    .dashboard-title {
+        font-size: 1.5rem;
+    }
+
+    .dashboard-subtitle {
+        font-size: 0.85rem;
+    }
+
+    /* Stat cards: 2 per row on phones instead of jumping straight to it
+       with full desktop padding (was cramped) */
+    .stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+        padding: 1rem 1.1rem;
+    }
+
+    .stat-card-label {
+        font-size: 0.68rem;
+    }
+
+    .stat-card-value {
+        font-size: 1.4rem;
+    }
+
+    .participant-grid {
+        gap: 0.75rem;
+    }
+
+    .participant-card {
+        padding: 1.25rem;
+    }
+
+    .participant-stats-grid {
+        gap: 0.75rem;
+    }
+
+    .charts-grid {
+        gap: 0.75rem;
+    }
+
+    .chart-card,
+    .heatmap-card {
+        padding: 1.1rem;
+        overflow-x: auto;
+    }
+}
+
+@media (max-width: 420px) {
+
+    /* On very narrow phones, drop stat cards to a single column
+       so labels/values never get clipped */
+    .stat-grid {
+        grid-template-columns: 1fr;
+    }
+}
