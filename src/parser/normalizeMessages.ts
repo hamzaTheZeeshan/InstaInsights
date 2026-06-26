@@ -21,12 +21,20 @@ function isSystemMessage(raw: RawMessage): boolean {
   if (lower.includes('reacted')) return true;
   if (lower.includes('liked a')) return true;
   if (lower.includes('sent an attachment')) return true;
-  if (lower.includes('missed a video call')) return true;
-  if (lower.includes('missed a voice call')) return true;
-  if (lower.includes('started a video call')) return true;
-  if (lower.includes('started a voice call')) return true;
-  if (lower.includes('ended the video call')) return true;
+  // Call system messages — match fragments since Instagram prepends sender name
+  // e.g. "rayyangosling1 started an audio call", "Call ended", "Missed video chat"
+  if (lower.includes('audio call')) return true;
+  if (lower.includes('video call')) return true;
+  if (lower.includes('voice call')) return true;
+  if (lower.includes('video chat')) return true;
+  if (lower.includes('started audio')) return true;
+  if (lower.includes('started video')) return true;
+  if (lower.includes('call ended')) return true;
+  if (lower.includes('missed audio')) return true;
+  if (lower.includes('missed video')) return true;
   if (lower.includes('in a call')) return true;
+  if (lower.includes('joined the call')) return true;
+  if (lower.includes('left the call')) return true;
 
   return false;
 }
