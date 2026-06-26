@@ -4,12 +4,14 @@ import DashboardPage from './pages/DashboardPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import SearchPage from './pages/SearchPage';
 import CreatorsPage from './pages/CreatorsPage';
+import SelectInboxPage from './pages/SelectInboxPage';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/select" element={<SelectInboxPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/analytics" element={<AnalyticsPage />} />
         <Route path="/search" element={<SearchPage />} />

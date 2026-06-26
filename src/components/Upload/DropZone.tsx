@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { parseInstagramExport } from '../../parser/instagramParser';
 import { mergeAndNormalizeExports, extractReelShares } from '../../parser/normalizeMessages';
+import { extractZip, scanInboxes } from '../../parser/zipParser';
 import { useChatContext } from '../../context/ChatContext';
 import type { RawInstagramExport } from '../../types/instagram';
 
@@ -10,27 +11,57 @@ export default function DropZone() {
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [fileCount, setFileCount] = useState(0);
-  const { setMessages, setParticipants, setReelShares } = useChatContext();
+  const [status, setStatus] = useState('');
+  const { setMessages, setParticipants, setReelShares, setZip, setInboxes } = useChatContext();
   const navigate = useNavigate();
 
-  const processFiles = useCallback((files: File[]) => {
+  const processFiles = useCallback(async (files: File[]) => {
+    setError(null);
+    setIsLoading(true);
+
+    const zipFile = files.find(f => f.name.endsWith('.zip'));
     const jsonFiles = files.filter(f => f.name.endsWith('.json'));
-    if (jsonFiles.length === 0) {
-      setError('Please upload at least one .json file.');
+
+    // ZIP flow
+    if (zipFile) {
+      try {
+        setStatus('Extracting zip...');
+        const zip = await extractZip(zipFile);
+        setStatus('Scanning inboxes...');
+        const inboxes = await scanInboxes(zip);
+
+        if (inboxes.length === 0) {
+          setError('No Instagram message inboxes found in this zip file.');
+          setIsLoading(false);
+          return;
+        }
+
+        setZip(zip);
+        setInboxes(inboxes);
+        setIsLoading(false);
+        navigate('/select');
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to read zip file.');
+        setIsLoading(false);
+      }
       return;
     }
-    setIsLoading(true);
-    setError(null);
-    setFileCount(jsonFiles.length);
+
+    // JSON flow (existing)
+    if (jsonFiles.length === 0) {
+      setError('Please upload a .zip file or one or more .json files.');
+      setIsLoading(false);
+      return;
+    }
+
+    setStatus(`Parsing ${jsonFiles.length} file${jsonFiles.length > 1 ? 's' : ''}...`);
 
     const readers = jsonFiles.map(file =>
       new Promise<RawInstagramExport>((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = (e) => {
           try {
-            const raw = parseInstagramExport(e.target?.result as string);
-            resolve(raw);
+            resolve(parseInstagramExport(e.target?.result as string));
           } catch (err) {
             reject(err);
           }
@@ -39,21 +70,20 @@ export default function DropZone() {
       })
     );
 
-    Promise.all(readers)
-      .then(exports => {
-        const participants = exports[0].participants.map(p => p.name);
-        const msgs = mergeAndNormalizeExports(exports);
-        const reels = extractReelShares(exports);
-        setMessages(msgs);
-        setParticipants(participants);
-        setReelShares(reels);
-        navigate('/dashboard');
-      })
-      .catch(err => {
-        setError(err instanceof Error ? err.message : 'Failed to parse files.');
-        setIsLoading(false);
-      });
-  }, [setMessages, setParticipants, setReelShares, navigate]);
+    try {
+      const exports = await Promise.all(readers);
+      const participants = exports[0].participants.map(p => p.name);
+      const msgs = mergeAndNormalizeExports(exports);
+      const reels = extractReelShares(exports);
+      setMessages(msgs);
+      setParticipants(participants);
+      setReelShares(reels);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to parse files.');
+      setIsLoading(false);
+    }
+  }, [setMessages, setParticipants, setReelShares, setZip, setInboxes, navigate]);
 
   const onDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -82,13 +112,13 @@ export default function DropZone() {
           onClick={() => document.getElementById('fileInput')?.click()}
         >
           <span className="dropzone-icon">📂</span>
-          <p className="dropzone-title">Drop your JSON files here</p>
-          <p className="dropzone-subtitle">Select multiple files at once — we'll merge them</p>
+          <p className="dropzone-title">Drop your ZIP or JSON files here</p>
+          <p className="dropzone-subtitle">Upload the full ZIP export or individual message JSON files</p>
           <p className="dropzone-hint">or click to browse</p>
           <input
             id="fileInput"
             type="file"
-            accept=".json"
+            accept=".zip,.json"
             multiple
             style={{ display: 'none' }}
             onChange={onFileChange}
@@ -96,9 +126,7 @@ export default function DropZone() {
         </div>
 
         {isLoading && (
-          <p className="dropzone-loading">
-            ⏳ Parsing {fileCount} file{fileCount > 1 ? 's' : ''} and merging...
-          </p>
+          <p className="dropzone-loading">⏳ {status}</p>
         )}
 
         {error && (
