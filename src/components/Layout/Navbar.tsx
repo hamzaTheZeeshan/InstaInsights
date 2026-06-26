@@ -9,12 +9,13 @@ export default function Navbar() {
   const { reset } = useChatContext();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const links = [
-    { path: '/dashboard', label: 'Dashboard' },
-    { path: '/analytics', label: 'Analytics' },
-    { path: '/search', label: 'Search' },
-    { path: '/creators', label: 'About The Creators' },
-  ];
+const links = [
+  { path: '/select', label: '← Conversations' },
+  { path: '/dashboard', label: 'Dashboard' },
+  { path: '/analytics', label: 'Analytics' },
+  { path: '/search', label: 'Search' },
+  { path: '/creators', label: 'About The Creators' },
+];
 
   const handleReset = () => {
     reset();
