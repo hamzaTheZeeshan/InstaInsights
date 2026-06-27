@@ -22,13 +22,19 @@ export default function DropZone() {
     const zipFile = files.find(f => f.name.endsWith('.zip'));
     const jsonFiles = files.filter(f => f.name.endsWith('.json'));
 
-    // ZIP flow
     if (zipFile) {
+      if (zipFile.size > 1024 * 1024 * 1024) {
+        setError('ZIP file is over 1GB. Try uploading individual JSON files instead.');
+        setIsLoading(false);
+        return;
+      }
+
       try {
-        setStatus('Extracting zip...');
-        const zip = await extractZip(zipFile);
+        setStatus('Reading zip file...');
+        const unzipped = await extractZip(zipFile);
+
         setStatus('Scanning inboxes...');
-        const inboxes = await scanInboxes(zip);
+        const inboxes = await scanInboxes(unzipped);
 
         if (inboxes.length === 0) {
           setError('No Instagram message inboxes found in this zip file.');
@@ -36,18 +42,17 @@ export default function DropZone() {
           return;
         }
 
-        setZip(zip);
+        setZip(unzipped);
         setInboxes(inboxes);
         setIsLoading(false);
         navigate('/select');
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to read zip file.');
+        setError(err instanceof Error ? err.message : 'Failed to read zip. Try JSON files instead.');
         setIsLoading(false);
       }
       return;
     }
 
-    // JSON flow (existing)
     if (jsonFiles.length === 0) {
       setError('Please upload a .zip file or one or more .json files.');
       setIsLoading(false);
@@ -66,6 +71,7 @@ export default function DropZone() {
             reject(err);
           }
         };
+        reader.onerror = () => reject(new Error(`Could not read ${file.name}`));
         reader.readAsText(file);
       })
     );

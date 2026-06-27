@@ -2,7 +2,6 @@ import { createContext, useContext, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Message } from '../types/message';
 import type { InboxPreview } from '../parser/zipParser';
-import JSZip from 'jszip';
 
 interface ReelShare {
   sender: string;
@@ -16,7 +15,7 @@ interface ChatContextType {
   reelShares: ReelShare[];
   isLoading: boolean;
   error: string | null;
-  zip: JSZip | null;
+  zip: Record<string, Uint8Array> | null;
   inboxes: InboxPreview[];
   selectedInbox: InboxPreview | null;
   setMessages: (msgs: Message[]) => void;
@@ -24,7 +23,7 @@ interface ChatContextType {
   setReelShares: (reels: ReelShare[]) => void;
   setIsLoading: (val: boolean) => void;
   setError: (err: string | null) => void;
-  setZip: (zip: JSZip | null) => void;
+  setZip: (zip: Record<string, Uint8Array> | null) => void;
   setInboxes: (inboxes: InboxPreview[]) => void;
   setSelectedInbox: (inbox: InboxPreview | null) => void;
   reset: () => void;
@@ -38,7 +37,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const [reelShares, setReelShares] = useState<ReelShare[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [zip, setZip] = useState<JSZip | null>(null);
+  const [zip, setZip] = useState<Record<string, Uint8Array> | null>(null);
   const [inboxes, setInboxes] = useState<InboxPreview[]>([]);
   const [selectedInbox, setSelectedInbox] = useState<InboxPreview | null>(null);
 
