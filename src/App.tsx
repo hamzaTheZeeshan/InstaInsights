@@ -5,6 +5,7 @@ import AnalyticsPage from './pages/AnalyticsPage';
 import SearchPage from './pages/SearchPage';
 import CreatorsPage from './pages/CreatorsPage';
 import SelectInboxPage from './pages/SelectInboxPage';
+import FeedbackPage from './pages/FeedbackPage';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/analytics" element={<AnalyticsPage />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/creators" element={<CreatorsPage />} />
+        <Route path="/feedback" element={<FeedbackPage />} />
       </Routes>
     </BrowserRouter>
   );

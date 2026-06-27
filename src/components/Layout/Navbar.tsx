@@ -9,13 +9,14 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { reset, zipFile } = useChatContext();
 
-  const links = [
-    ...(zipFile ? [{ path: '/select', label: '← Conversations' }] : []),
-    { path: '/dashboard', label: 'Dashboard' },
-    { path: '/analytics', label: 'Analytics' },
-    { path: '/search', label: 'Search' },
-    { path: '/creators', label: 'About The Creators' },
-  ];
+ const links = [
+  ...(zipFile ? [{ path: '/select', label: '← Conversations' }] : []),
+  { path: '/dashboard', label: 'Dashboard' },
+  { path: '/analytics', label: 'Analytics' },
+  { path: '/search', label: 'Search' },
+  { path: '/creators', label: 'About The Creators' },
+  { path: '/feedback', label: 'Feedback' },
+];
 
   const handleReset = () => {
     reset();
