@@ -6,16 +6,16 @@ import { useChatContext } from '../../context/ChatContext';
 export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { reset } = useChatContext();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { reset, zipFile } = useChatContext();
 
-const links = [
-  { path: '/select', label: '← Conversations' },
-  { path: '/dashboard', label: 'Dashboard' },
-  { path: '/analytics', label: 'Analytics' },
-  { path: '/search', label: 'Search' },
-  { path: '/creators', label: 'About The Creators' },
-];
+  const links = [
+    ...(zipFile ? [{ path: '/select', label: '← Conversations' }] : []),
+    { path: '/dashboard', label: 'Dashboard' },
+    { path: '/analytics', label: 'Analytics' },
+    { path: '/search', label: 'Search' },
+    { path: '/creators', label: 'About The Creators' },
+  ];
 
   const handleReset = () => {
     reset();

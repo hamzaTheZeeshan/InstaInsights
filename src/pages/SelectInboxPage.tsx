@@ -1,23 +1,25 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useChatContext } from '../context/ChatContext';
-import { loadInboxMessages } from '../parser/zipParser';
+import { loadInboxFromZip } from '../parser/zipParser';
 import { mergeAndNormalizeExports, extractReelShares } from '../parser/normalizeMessages';
 import './SelectInboxPage.css';
+
 
 export default function SelectInboxPage() {
   const navigate = useNavigate();
   const {
-    zip, inboxes, isLoading,
+    zipFile, inboxes,
     setMessages, setParticipants, setReelShares,
     setIsLoading, setError, setSelectedInbox, reset,
   } = useChatContext();
 
   const [query, setQuery] = useState('');
+  const [loadingInbox, setLoadingInbox] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!zip || inboxes.length === 0) navigate('/');
-  }, [zip, inboxes, navigate]);
+    if (!zipFile || inboxes.length === 0) navigate('/');
+  }, [zipFile, inboxes, navigate]);
 
   const filtered = inboxes.filter(inbox =>
     inbox.title.toLowerCase().includes(query.toLowerCase()) ||
@@ -25,23 +27,25 @@ export default function SelectInboxPage() {
   );
 
   const handleSelect = async (inbox: typeof inboxes[0]) => {
-    if (!zip) return;
+    if (!zipFile) return;
+    setLoadingInbox(inbox.folderName);
     setIsLoading(true);
     setError(null);
-    setSelectedInbox(inbox);
 
     try {
-      const exports = await loadInboxMessages(zip, inbox.messageFiles);
+      const { exports, resolvedInbox } = await loadInboxFromZip(zipFile, inbox);
       const msgs = mergeAndNormalizeExports(exports);
       const reels = extractReelShares(exports);
       setMessages(msgs);
-      setParticipants(inbox.participants);
+      setParticipants(resolvedInbox.participants);
       setReelShares(reels);
+      setSelectedInbox(resolvedInbox);
       navigate('/dashboard');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load inbox.');
     } finally {
       setIsLoading(false);
+      setLoadingInbox(null);
     }
   };
 
@@ -58,7 +62,6 @@ export default function SelectInboxPage() {
         </button>
       </div>
 
-      {/* Search bar */}
       <div className="select-search-wrapper">
         <input
           type="text"
@@ -74,16 +77,12 @@ export default function SelectInboxPage() {
         )}
       </div>
 
-      {isLoading && (
-        <p className="select-loading">⏳ Loading conversation...</p>
-      )}
-
       <div className="select-grid">
         {filtered.map(inbox => (
           <div
             key={inbox.folderName}
-            className="inbox-card"
-            onClick={() => handleSelect(inbox)}
+            className={`inbox-card ${loadingInbox === inbox.folderName ? 'inbox-card--loading' : ''}`}
+            onClick={() => !loadingInbox && handleSelect(inbox)}
           >
             <div className="inbox-avatar">
               {inbox.title.charAt(0).toUpperCase()}
@@ -91,10 +90,15 @@ export default function SelectInboxPage() {
             <div className="inbox-info">
               <p className="inbox-name">{inbox.title}</p>
               <p className="inbox-meta">
-                {inbox.participants.join(' & ')} · {inbox.messageFiles.length} file{inbox.messageFiles.length !== 1 ? 's' : ''}
+                {inbox.participants.length > 0
+                  ? inbox.participants.join(' & ')
+                  : 'Tap to load'} · {inbox.messageFiles.length} file{inbox.messageFiles.length !== 1 ? 's' : ''}
               </p>
             </div>
-            <span className="inbox-arrow">→</span>
+            {loadingInbox === inbox.folderName
+              ? <span className="inbox-loading">⏳</span>
+              : <span className="inbox-arrow">→</span>
+            }
           </div>
         ))}
 

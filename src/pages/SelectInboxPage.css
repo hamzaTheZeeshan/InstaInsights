@@ -207,3 +207,13 @@
     font-size: 0.85rem;
   }
 }
+.inbox-card--loading {
+  opacity: 0.6;
+  cursor: wait;
+  pointer-events: none;
+}
+
+.inbox-loading {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}

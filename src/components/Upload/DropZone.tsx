@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { parseInstagramExport } from '../../parser/instagramParser';
 import { mergeAndNormalizeExports, extractReelShares } from '../../parser/normalizeMessages';
-import { extractZip, scanInboxes } from '../../parser/zipParser';
+import { buildZipIndex, scanInboxesFromIndex, resolveInboxTitles } from '../../parser/zipParser';
 import { useChatContext } from '../../context/ChatContext';
 import type { RawInstagramExport } from '../../types/instagram';
 
@@ -12,7 +12,7 @@ export default function DropZone() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState('');
-  const { setMessages, setParticipants, setReelShares, setZip, setInboxes } = useChatContext();
+  const { setMessages, setParticipants, setReelShares, setZipFile, setInboxes } = useChatContext();
   const navigate = useNavigate();
 
   const processFiles = useCallback(async (files: File[]) => {
@@ -23,27 +23,24 @@ export default function DropZone() {
     const jsonFiles = files.filter(f => f.name.endsWith('.json'));
 
     if (zipFile) {
-      if (zipFile.size > 1024 * 1024 * 1024) {
-        setError('ZIP file is over 1GB. Try uploading individual JSON files instead.');
-        setIsLoading(false);
-        return;
-      }
-
       try {
-        setStatus('Reading zip file...');
-        const unzipped = await extractZip(zipFile);
+        setStatus('Reading zip structure...');
+        const index = await buildZipIndex(zipFile);
 
-        setStatus('Scanning inboxes...');
-        const inboxes = await scanInboxes(unzipped);
+        setStatus('Finding conversations...');
+        const rawInboxes = scanInboxesFromIndex(index);
 
-        if (inboxes.length === 0) {
+        if (rawInboxes.length === 0) {
           setError('No Instagram message inboxes found in this zip file.');
           setIsLoading(false);
           return;
         }
 
-        setZip(unzipped);
-        setInboxes(inboxes);
+        setStatus(`Resolving ${rawInboxes.length} conversation names...`);
+        const resolvedInboxes = await resolveInboxTitles(zipFile, rawInboxes);
+
+        setZipFile(zipFile);
+        setInboxes(resolvedInboxes);
         setIsLoading(false);
         navigate('/select');
       } catch (err) {
@@ -89,7 +86,7 @@ export default function DropZone() {
       setError(err instanceof Error ? err.message : 'Failed to parse files.');
       setIsLoading(false);
     }
-  }, [setMessages, setParticipants, setReelShares, setZip, setInboxes, navigate]);
+  }, [setMessages, setParticipants, setReelShares, setZipFile, setInboxes, navigate]);
 
   const onDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();

@@ -15,7 +15,7 @@ interface ChatContextType {
   reelShares: ReelShare[];
   isLoading: boolean;
   error: string | null;
-  zip: Record<string, Uint8Array> | null;
+  zipFile: File | null;
   inboxes: InboxPreview[];
   selectedInbox: InboxPreview | null;
   setMessages: (msgs: Message[]) => void;
@@ -23,7 +23,7 @@ interface ChatContextType {
   setReelShares: (reels: ReelShare[]) => void;
   setIsLoading: (val: boolean) => void;
   setError: (err: string | null) => void;
-  setZip: (zip: Record<string, Uint8Array> | null) => void;
+  setZipFile: (file: File | null) => void;
   setInboxes: (inboxes: InboxPreview[]) => void;
   setSelectedInbox: (inbox: InboxPreview | null) => void;
   reset: () => void;
@@ -37,7 +37,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const [reelShares, setReelShares] = useState<ReelShare[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [zip, setZip] = useState<Record<string, Uint8Array> | null>(null);
+  const [zipFile, setZipFile] = useState<File | null>(null);
   const [inboxes, setInboxes] = useState<InboxPreview[]>([]);
   const [selectedInbox, setSelectedInbox] = useState<InboxPreview | null>(null);
 
@@ -47,7 +47,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     setReelShares([]);
     setIsLoading(false);
     setError(null);
-    setZip(null);
+    setZipFile(null);
     setInboxes([]);
     setSelectedInbox(null);
   };
@@ -59,7 +59,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       reelShares,
       isLoading,
       error,
-      zip,
+      zipFile,
       inboxes,
       selectedInbox,
       setMessages,
@@ -67,7 +67,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       setReelShares,
       setIsLoading,
       setError,
-      setZip,
+      setZipFile,
       setInboxes,
       setSelectedInbox,
       reset,
