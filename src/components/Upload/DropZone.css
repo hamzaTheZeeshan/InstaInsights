@@ -1,12 +1,13 @@
 /* ── Page wrapper ─────────────────────────────────────────── */
 .upload-page {
   min-height: 100vh;
-  background-color: #f4f6fb;
+  background-color: var(--color-bg-page);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 2rem;
+  transition: background-color 0.2s ease;
 }
 
 /* ── Hero header ──────────────────────────────────────────── */
@@ -18,20 +19,23 @@
 .upload-hero-title {
   font-size: 2.5rem;
   font-weight: 800;
-  color: #1e1b4b;
   margin: 0 0 0.5rem 0;
   letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .upload-hero-subtitle {
   font-size: 1rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   margin: 0 0 0.5rem 0;
 }
 
 .upload-hero-privacy {
   font-size: 0.8rem;
-  color: #a78bfa;
+  color: var(--color-accent);
   font-weight: 500;
   margin: 0;
 }
@@ -43,8 +47,8 @@
 }
 
 .dropzone-card {
-  background: #ffffff;
-  border: 2px dashed #c4b5fd;
+  background: var(--color-bg-surface);
+  border: 2px dashed var(--color-border);
   border-radius: 1.25rem;
   padding: 3rem 2rem;
   text-align: center;
@@ -54,15 +58,15 @@
 }
 
 .dropzone-card:hover {
-  border-color: #7c3aed;
-  background: #faf5ff;
+  border-color: var(--color-accent);
+  background: var(--color-accent-bg);
   transform: translateY(-2px);
   box-shadow: 0 8px 28px rgba(124, 58, 237, 0.12);
 }
 
 .dropzone-card--dragging {
-  border-color: #7c3aed;
-  background: #f5f3ff;
+  border-color: var(--color-accent);
+  background: var(--color-accent-bg);
   transform: translateY(-2px);
   box-shadow: 0 8px 28px rgba(124, 58, 237, 0.18);
 }
@@ -76,19 +80,19 @@
 .dropzone-title {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #1e1b4b;
+  color: var(--color-text-primary);
   margin: 0 0 0.4rem 0;
 }
 
 .dropzone-subtitle {
   font-size: 0.85rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   margin: 0 0 0.25rem 0;
 }
 
 .dropzone-hint {
   font-size: 0.75rem;
-  color: #a78bfa;
+  color: var(--color-accent);
   font-weight: 500;
   margin: 0;
 }
@@ -99,13 +103,20 @@
   text-align: center;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #7c3aed;
+  color: var(--color-accent);
   animation: pulse 1.5s ease-in-out infinite;
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
 }
 
 .dropzone-error {
@@ -113,9 +124,9 @@
   text-align: center;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #ef4444;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  color: var(--color-danger);
+  background: var(--color-danger-bg);
+  border: 1px solid var(--color-danger-border);
   border-radius: 0.75rem;
   padding: 0.75rem 1rem;
 }
@@ -131,37 +142,39 @@
 }
 
 .feature-pill {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
   border-radius: 999px;
   padding: 0.4rem 1rem;
   font-size: 0.75rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   font-weight: 500;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 /* ── Instructions section ─────────────────────────────────── */
 .instructions-card {
-  background: #ffffff;
+  background: var(--color-bg-surface);
   border-radius: 1.25rem;
   padding: 1.75rem;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
   margin-top: 2rem;
   max-width: 480px;
   width: 100%;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .instructions-title {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #1e1b4b;
+  color: var(--color-text-primary);
   margin: 0 0 0.5rem 0;
 }
 
 .instructions-subtitle {
   font-size: 0.8rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   margin: 0 0 1.25rem 0;
   line-height: 1.5;
 }
@@ -195,12 +208,41 @@
 
 .step-text {
   font-size: 0.8rem;
-  color: #374151;
+  color: var(--color-text-secondary);
   line-height: 1.5;
   margin: 0;
 }
 
 .step-text strong {
-  color: #1e1b4b;
+  color: var(--color-text-primary);
   font-weight: 600;
+}
+
+/* ── Mobile ───────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .upload-page {
+    padding: 1.5rem 1rem;
+    justify-content: flex-start;
+    padding-top: 2.5rem;
+  }
+
+  .upload-hero {
+    margin-bottom: 1.75rem;
+  }
+
+  .upload-hero-title {
+    font-size: 1.875rem;
+  }
+
+  .upload-hero-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .dropzone-card {
+    padding: 2rem 1.25rem;
+  }
+
+  .instructions-card {
+    padding: 1.25rem;
+  }
 }

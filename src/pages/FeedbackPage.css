@@ -1,7 +1,8 @@
 .feedback-page {
   padding: 2rem;
-  background-color: #f4f6fb;
+  background-color: var(--color-bg-page);
   min-height: 100vh;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .feedback-header {
@@ -11,19 +12,19 @@
 .feedback-title {
   font-size: 1.875rem;
   font-weight: 700;
-  color: #1e1b4b;
+  color: var(--color-text-primary);
   margin: 0 0 0.25rem 0;
   letter-spacing: -0.5px;
 }
 
 .feedback-subtitle {
   font-size: 0.9rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
 .feedback-card {
-  background: #ffffff;
+  background: var(--color-bg-surface);
   border-radius: 1.25rem;
   padding: 2rem;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
@@ -37,7 +38,7 @@
 .feedback-label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #1e1b4b;
+  color: var(--color-text-primary);
   margin: 0 0 0.75rem 0;
 }
 
@@ -66,7 +67,7 @@
 .feedback-rating-label {
   font-size: 0.8rem;
   font-weight: 600;
-  color: #7c3aed;
+  color: var(--color-accent);
   margin: 0.5rem 0 0 0;
 }
 
@@ -78,9 +79,9 @@
 }
 
 .category-btn {
-  background: #f5f3ff;
-  border: 1.5px solid #ede9fe;
-  color: #5b21b6;
+  background: var(--color-accent-bg);
+  border: 1.5px solid var(--color-border);
+  color: var(--color-accent);
   font-size: 0.8rem;
   font-weight: 600;
   padding: 0.4rem 1rem;
@@ -90,7 +91,7 @@
 }
 
 .category-btn:hover {
-  background: #ede9fe;
+  background: var(--color-accent-bg);
 }
 
 .category-btn--active {
@@ -102,12 +103,12 @@
 /* Textarea */
 .feedback-textarea {
   width: 100%;
-  background: #f9fafb;
-  border: 1.5px solid #e5e7eb;
+  background: var(--color-bg-page);
+  border: 1.5px solid var(--color-border);
   border-radius: 0.875rem;
   padding: 0.875rem 1rem;
   font-size: 0.875rem;
-  color: #1e1b4b;
+  color: var(--color-text-primary);
   outline: none;
   resize: vertical;
   font-family: inherit;
@@ -116,7 +117,7 @@
 }
 
 .feedback-textarea:focus {
-  border-color: #7c3aed;
+  border-color: var(--color-accent);
 }
 
 /* Submit */
@@ -148,7 +149,7 @@
 .feedback-success {
   text-align: center;
   padding: 4rem 2rem;
-  background: #ffffff;
+  background: var(--color-bg-surface);
   border-radius: 1.25rem;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
   max-width: 400px;
@@ -163,41 +164,41 @@
 .feedback-success-title {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #1e1b4b;
+  color: var(--color-text-primary);
   margin: 0 0 0.5rem 0;
 }
 
 .feedback-success-text {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   line-height: 1.6;
   margin: 0;
 }
 
 .feedback-required {
-  color: #ef4444;
+  color: var(--color-danger);
 }
 
 .feedback-hint {
   font-size: 0.75rem;
-  color: #9ca3af;
+  color: var(--color-text-muted);
   margin: 0.4rem 0 0 0;
 }
 
 .feedback-hint-inline {
   font-size: 0.75rem;
-  color: #9ca3af;
+  color: var(--color-text-muted);
   font-weight: 400;
 }
 
 .feedback-input {
   width: 100%;
-  background: #f9fafb;
-  border: 1.5px solid #e5e7eb;
+  background: var(--color-bg-page);
+  border: 1.5px solid var(--color-border);
   border-radius: 0.875rem;
   padding: 0.875rem 1rem;
   font-size: 0.875rem;
-  color: #1e1b4b;
+  color: var(--color-text-primary);
   outline: none;
   box-sizing: border-box;
   font-family: inherit;
@@ -205,22 +206,22 @@
 }
 
 .feedback-input:focus {
-  border-color: #7c3aed;
+  border-color: var(--color-accent);
 }
 
 .feedback-submit-hint {
   text-align: center;
   font-size: 0.75rem;
-  color: #9ca3af;
+  color: var(--color-text-muted);
   margin: 0.75rem 0 0 0;
 }
 
 .feedback-error {
-  color: #ef4444;
+  color: var(--color-danger);
   font-size: 0.8rem;
   margin: 0 0 1rem 0;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  background: var(--color-danger-bg);
+  border: 1px solid var(--color-danger-border);
   border-radius: 0.75rem;
   padding: 0.75rem 1rem;
 }

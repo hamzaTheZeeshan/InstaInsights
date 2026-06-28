@@ -1,0 +1,8 @@
+Parse json files to interfaces(structures) then present on that charts etc and when you refresh its gone so data is temporarily stored in the browser via typescript
+
+
+update - 27th June 2026
+
+JSZip se error araha tha for large files. to resolve that we deleted this module and used fflate. But it too wasn't taking zip files larger than 1 GB. Then we did changes that loads all chats but when user checks and goes to the other half those files are removed. Just like streaming. Chats saari but load half and vice versa. 
+
+This issue came when a user had 2.6 GB zip file so we did this to resolve it

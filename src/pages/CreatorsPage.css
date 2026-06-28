@@ -1,8 +1,9 @@
 /* ── Page wrapper ─────────────────────────────────────────── */
 .creators-page {
   padding: 2rem;
-  background-color: #f4f6fb;
+  background-color: var(--color-bg-page);
   min-height: 100vh;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* ── Header ───────────────────────────────────────────────── */
@@ -14,14 +15,14 @@
 .creators-title {
   font-size: 1.875rem;
   font-weight: 700;
-  color: #1e1b4b;
+  color: var(--color-text-primary);
   margin: 0 0 0.5rem 0;
   letter-spacing: -0.5px;
 }
 
 .creators-subtitle {
   font-size: 0.95rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   margin: 0 auto;
   max-width: 480px;
   line-height: 1.6;
@@ -45,7 +46,7 @@
 }
 
 .creator-card {
-  background: #ffffff;
+  background: var(--color-bg-surface);
   border-radius: 1.25rem;
   padding: 2rem 1.75rem;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
@@ -77,14 +78,14 @@
 .creator-name {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #1e1b4b;
+  color: var(--color-text-primary);
   margin: 0 0 0.25rem 0;
 }
 
 .creator-role {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #7c3aed;
+  color: var(--color-accent);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   margin: 0 0 1rem 0;
@@ -92,7 +93,7 @@
 
 .creator-bio {
   font-size: 0.85rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   line-height: 1.65;
   margin: 0 0 1.5rem 0;
 }
@@ -130,25 +131,25 @@
 
 /* ── Project card ─────────────────────────────────────────── */
 .creators-project-card {
-  background: #ffffff;
+  background: var(--color-bg-surface);
   border-radius: 1.25rem;
   padding: 2rem;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
   max-width: 860px;
   margin: 0 auto;
-  border-top: 3px solid #7c3aed;
+  border-top: 3px solid var(--color-accent);
 }
 
 .creators-project-title {
   font-size: 1rem;
   font-weight: 700;
-  color: #1e1b4b;
+  color: var(--color-text-primary);
   margin: 0 0 0.75rem 0;
 }
 
 .creators-project-text {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   line-height: 1.7;
   margin: 0 0 1.25rem 0;
 }
@@ -160,9 +161,9 @@
 }
 
 .project-tag {
-  background: #f5f3ff;
-  border: 1px solid #ede9fe;
-  color: #5b21b6;
+  background: var(--color-accent-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-accent);
   font-size: 0.75rem;
   font-weight: 600;
   padding: 0.3rem 0.85rem;

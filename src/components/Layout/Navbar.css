@@ -1,31 +1,34 @@
 /* ============================================================
    Navbar.css
-   Consistent with DashboardPage.css — white background, indigo
-   text, purple accent for active link.
+   Colors come from theme.css tokens so light/dark mode just
+   works via [data-theme="dark"] on <html>.
    ============================================================ */
 
 /* ── Nav wrapper ──────────────────────────────────────────── */
 .navbar {
-    background: #ffffff;
-    border-bottom: 1px solid #e5e7eb;
+    background: var(--color-bg-surface);
+    border-bottom: 1px solid var(--color-border);
     padding: 0 1.5rem;
     height: 64px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--shadow-navbar);
     position: sticky;
     top: 0;
     z-index: 100;
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 /* ── Brand / logo ─────────────────────────────────────────── */
 .navbar-brand {
     font-size: 1.2rem;
     font-weight: 800;
-    color: #1e1b4b;
+    color: var(--color-text-primary);
     cursor: pointer;
     letter-spacing: -0.5px;
+    /* gradient is intentionally hardcoded — fixed brand identity,
+       not themeable */
     background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -52,27 +55,61 @@
     background: transparent;
     cursor: pointer;
     transition: background 0.15s ease, color 0.15s ease;
-    color: #6b7280;
+    color: var(--color-text-secondary);
 }
 
 .nav-link:hover {
-    background: #f5f3ff;
-    color: #7c3aed;
+    background: var(--color-accent-bg);
+    color: var(--color-accent);
 }
 
 .nav-link--active {
-    background: #f5f3ff;
-    color: #7c3aed;
+    background: var(--color-accent-bg);
+    color: var(--color-accent);
     font-weight: 700;
+}
+
+/* ── Right-side action cluster (reset, theme toggle, hamburger) ─
+   Grouped so they stay together as one unit, with the theme
+   toggle visible regardless of mobile menu open/closed state. */
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ── Theme toggle ─────────────────────────────────────────── */
+.navbar-theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    color: var(--color-text-secondary);
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.navbar-theme-toggle:hover {
+    background: var(--color-accent-bg);
+    color: var(--color-accent);
+}
+
+.navbar-theme-toggle svg {
+    width: 18px;
+    height: 18px;
 }
 
 /* ── Reset button ─────────────────────────────────────────── */
 .navbar-reset {
     font-size: 0.8rem;
     font-weight: 500;
-    color: #9ca3af;
+    color: var(--color-text-muted);
     background: transparent;
-    border: 1.5px solid #e5e7eb;
+    border: 1.5px solid var(--color-border);
     border-radius: 0.625rem;
     padding: 0.35rem 0.875rem;
     cursor: pointer;
@@ -80,9 +117,9 @@
 }
 
 .navbar-reset:hover {
-    border-color: #fca5a5;
-    color: #ef4444;
-    background: #fef2f2;
+    border-color: var(--color-danger-border);
+    color: var(--color-danger);
+    background: var(--color-danger-bg);
 }
 
 /* Mobile-duplicate reset button is hidden by default; only shown
@@ -109,16 +146,16 @@
 }
 
 .navbar-toggle:hover {
-    background: #f5f3ff;
+    background: var(--color-accent-bg);
 }
 
 .navbar-toggle-bar {
     width: 20px;
     height: 2px;
-    background: #1e1b4b;
+    background: var(--color-text-primary);
     border-radius: 2px;
     margin: 0 auto;
-    transition: transform 0.2s ease, opacity 0.2s ease;
+    transition: transform 0.2s ease, opacity 0.2s ease, background-color 0.2s ease;
 }
 
 /* Animate into an "X" when menu is open — toggle this class via JS/React state */
@@ -161,12 +198,13 @@
         top: 64px;
         left: 0;
         right: 0;
-        background: #ffffff;
+        background: var(--color-bg-surface);
         flex-direction: column;
         gap: 0.25rem;
         padding: 0.75rem 1rem 1rem;
-        border-bottom: 1px solid #e5e7eb;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        border-bottom: 1px solid var(--color-border);
+        box-shadow: var(--shadow-dropdown);
+        transition: background-color 0.2s ease, border-color 0.2s ease;
     }
 
     .navbar-links--open {

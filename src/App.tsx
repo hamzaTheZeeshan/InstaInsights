@@ -7,6 +7,7 @@ import CreatorsPage from './pages/CreatorsPage';
 import SelectInboxPage from './pages/SelectInboxPage';
 import FeedbackPage from './pages/FeedbackPage';
 
+// Theme is handled by ThemeProvider in main.tsx — no useTheme needed here.
 function App() {
   return (
     <BrowserRouter>

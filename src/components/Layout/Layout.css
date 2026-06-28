@@ -1,12 +1,13 @@
 /* ============================================================
    Layout.css
-   Consistent with DashboardPage.css — light #f4f6fb background,
-   full-height shell, constrained content width.
+   Consistent with DashboardPage.css. Colors come from theme.css
+   tokens so light/dark mode just works via [data-theme="dark"].
    ============================================================ */
 
 .layout-shell {
     min-height: 100vh;
-    background-color: #f4f6fb;
+    background-color: var(--color-bg-page);
+    transition: background-color 0.2s ease;
 }
 
 .layout-main {

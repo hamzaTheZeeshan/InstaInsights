@@ -2,21 +2,41 @@ import { useState } from 'react';
 import './Navbar.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useChatContext } from '../../context/ChatContext';
+import { useThemeContext } from '../../hooks/ThemeContext';
 
+function SunIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+    </svg>
+  );
+}
+
+function MoonIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    </svg>
+  );
+}
+
+// No props needed — theme comes from context now
 export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const { reset, zipFile } = useChatContext();
+  const { theme, toggleTheme } = useThemeContext(); // ← single source of truth
 
- const links = [
-  ...(zipFile ? [{ path: '/select', label: '← Conversations' }] : []),
-  { path: '/dashboard', label: 'Dashboard' },
-  { path: '/analytics', label: 'Analytics' },
-  { path: '/search', label: 'Search' },
-  { path: '/creators', label: 'About The Creators' },
-  { path: '/feedback', label: 'Feedback' },
-];
+  const links = [
+    ...(zipFile ? [{ path: '/select', label: '← Conversations' }] : []),
+    { path: '/dashboard', label: 'Dashboard' },
+    { path: '/analytics', label: 'Analytics' },
+    { path: '/search', label: 'Search' },
+    { path: '/creators', label: 'About The Creators' },
+    { path: '/feedback', label: 'Feedback' },
+  ];
 
   const handleReset = () => {
     reset();
@@ -31,24 +51,21 @@ export default function Navbar() {
 
   return (
     <nav className="navbar">
-      <span className="navbar-brand" onClick={handleReset}>
+      <span
+        className="navbar-brand"
+        onClick={handleReset}
+        role="button"
+        tabIndex={0}
+        onKeyDown={e => e.key === 'Enter' && handleReset()}
+        aria-label="InstaInsights — go to home"
+      >
         InstaInsights
       </span>
-
-      <button
-        className={`navbar-toggle ${menuOpen ? 'navbar-toggle--open' : ''}`}
-        onClick={() => setMenuOpen(prev => !prev)}
-        aria-label="Toggle navigation menu"
-        aria-expanded={menuOpen}
-      >
-        <span className="navbar-toggle-bar"></span>
-        <span className="navbar-toggle-bar"></span>
-        <span className="navbar-toggle-bar"></span>
-      </button>
 
       <div className={`navbar-links ${menuOpen ? 'navbar-links--open' : ''}`}>
         {links.map(link => (
           <button
+            type="button"
             key={link.path}
             onClick={() => handleNavigate(link.path)}
             className={
@@ -60,17 +77,37 @@ export default function Navbar() {
             {link.label}
           </button>
         ))}
-
-        {/* Duplicated here so it appears inside the mobile dropdown too —
-            hidden via CSS on mobile from its original spot below */}
-        <button onClick={handleReset} className="navbar-reset navbar-reset--mobile">
+        <button type="button" onClick={handleReset} className="navbar-reset navbar-reset--mobile">
           ← New Chat
         </button>
       </div>
 
-      <button onClick={handleReset} className="navbar-reset navbar-reset--desktop">
-        ← New Chat
-      </button>
+      <div className="navbar-actions">
+        <button
+          type="button"
+          onClick={toggleTheme}
+          className="navbar-theme-toggle"
+          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+        >
+          {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+        </button>
+
+        <button type="button" onClick={handleReset} className="navbar-reset navbar-reset--desktop">
+          ← New Chat
+        </button>
+
+        <button
+          type="button"
+          className={`navbar-toggle ${menuOpen ? 'navbar-toggle--open' : ''}`}
+          onClick={() => setMenuOpen(prev => !prev)}
+          aria-label="Toggle navigation menu"
+          aria-expanded={menuOpen}
+        >
+          <span className="navbar-toggle-bar" />
+          <span className="navbar-toggle-bar" />
+          <span className="navbar-toggle-bar" />
+        </button>
+      </div>
     </nav>
   );
 }

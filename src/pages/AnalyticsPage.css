@@ -7,8 +7,9 @@
 /* ── Page wrapper ─────────────────────────────────────────── */
 .analytics-page {
     padding: 2rem;
-    background-color: #f4f6fb;
+    background-color: var(--color-bg-page);
     min-height: 100vh;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* ── Page header ──────────────────────────────────────────── */
@@ -19,14 +20,14 @@
 .analytics-title {
     font-size: 1.875rem;
     font-weight: 700;
-    color: #1e1b4b;
+    color: var(--color-text-primary);
     margin: 0 0 0.25rem 0;
     letter-spacing: -0.5px;
 }
 
 .analytics-subtitle {
     font-size: 0.9rem;
-    color: #6b7280;
+    color: var(--color-text-secondary);
     margin: 0;
 }
 
@@ -115,11 +116,11 @@
 }
 
 .spotlight-card {
-    background: #ffffff;
+    background: var(--color-bg-surface);
     border-radius: 1rem;
     padding: 1.5rem;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-    border-top: 3px solid #7c3aed;
+    border-top: 3px solid var(--color-accent);
 }
 
 .spotlight-card:nth-child(2) {
@@ -128,7 +129,7 @@
 
 .spotlight-card-meta {
     font-size: 0.8rem;
-    color: #6b7280;
+    color: var(--color-text-secondary);
     margin: 0 0 0.75rem 0;
     font-weight: 500;
 }
@@ -136,7 +137,7 @@
 .spotlight-card-date {
     font-size: 0.75rem;
     font-weight: 700;
-    color: #7c3aed;
+    color: var(--color-accent);
     margin: 0 0 0.5rem 0;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -144,7 +145,7 @@
 
 .spotlight-card-content {
     font-size: 0.875rem;
-    color: #374151;
+    color: var(--color-text-secondary);
     line-height: 1.6;
     margin: 0;
     display: -webkit-box;
@@ -155,7 +156,7 @@
 
 .spotlight-card-footer {
     font-size: 0.7rem;
-    color: #9ca3af;
+    color: var(--color-text-muted);
     margin: 0.75rem 0 0 0;
 }
 
@@ -174,7 +175,7 @@
 }
 
 .analytics-chart-card {
-    background: #ffffff;
+    background: var(--color-bg-surface);
     border-radius: 1rem;
     padding: 1.5rem;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
@@ -182,7 +183,7 @@
 
 /* ── Top phrases ──────────────────────────────────────────── */
 .phrases-card {
-    background: #ffffff;
+    background: var(--color-bg-surface);
     border-radius: 1rem;
     padding: 1.5rem;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
@@ -192,7 +193,7 @@
 .analytics-section-title {
     font-size: 0.95rem;
     font-weight: 700;
-    color: #1e1b4b;
+    color: var(--color-text-primary);
     margin: 0 0 1.25rem 0;
     letter-spacing: -0.2px;
 }
@@ -210,33 +211,33 @@
 }
 
 .phrase-chip {
-    background: #f5f3ff;
-    border: 1px solid #ede9fe;
+    background: var(--color-accent-bg);
+    border: 1px solid var(--color-border);
     border-radius: 0.75rem;
     padding: 0.75rem 1rem;
     transition: background 0.15s ease;
 }
 
 .phrase-chip:hover {
-    background: #ede9fe;
+    background: var(--color-accent-bg);
 }
 
 .phrase-chip-text {
     font-size: 0.8rem;
     font-weight: 600;
-    color: #5b21b6;
+    color: var(--color-accent);
     margin: 0 0 0.25rem 0;
 }
 
 .phrase-chip-count {
     font-size: 0.7rem;
-    color: #9ca3af;
+    color: var(--color-text-muted);
     margin: 0;
 }
 
 /* ── Double texts ─────────────────────────────────────────── */
 .double-texts-card {
-    background: #ffffff;
+    background: var(--color-bg-surface);
     border-radius: 1rem;
     padding: 1.5rem;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
@@ -250,7 +251,7 @@
 .double-text-item-name {
     font-size: 0.875rem;
     font-weight: 700;
-    color: #7c3aed;
+    color: var(--color-accent);
     margin: 0 0 0.25rem 0;
 }
 
@@ -261,14 +262,14 @@
 .double-text-item-count {
     font-size: 1.75rem;
     font-weight: 800;
-    color: #1e1b4b;
+    color: var(--color-text-primary);
     margin: 0 0 0.1rem 0;
     line-height: 1;
 }
 
 .double-text-item-label {
     font-size: 0.7rem;
-    color: #9ca3af;
+    color: var(--color-text-muted);
     margin: 0;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -276,7 +277,7 @@
 
 /* ── Yearly Heatmap ───────────────────────────────────────── */
 .yearly-heatmap-card {
-    background: #ffffff;
+    background: var(--color-bg-surface);
     border-radius: 1rem;
     padding: 1.5rem;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);

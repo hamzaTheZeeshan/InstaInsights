@@ -1,0 +1,65 @@
+/* ============================================================
+   theme.css
+   Design tokens for light/dark mode.
+
+   Light values live in :root. Dark overrides apply when
+   <html data-theme="dark"> is set — that attribute is managed by
+   src/hooks/useTheme.ts, not by this file.
+
+   Import this ONCE, globally, before any component CSS that
+   references these variables (Layout.css, Navbar.css, and
+   anything else that gets converted later).
+   ============================================================ */
+
+:root {
+    /* surfaces */
+    --color-bg-page: #f4f6fb;
+    --color-bg-surface: #ffffff;
+    --color-border: #e5e7eb;
+
+    /* text */
+    --color-text-primary: #1e1b4b;
+    --color-text-secondary: #6b7280;
+    --color-text-muted: #9ca3af;
+
+    /* brand accent (violet) — used for hover/active states.
+       NOTE: the navbar-brand gradient itself (violet→magenta) stays
+       hardcoded in Navbar.css on purpose — it's the fixed brand
+       identity, not a themeable surface color. */
+    --color-accent: #7c3aed;
+    --color-accent-bg: #f5f3ff;
+
+    /* danger (reset button hover) */
+    --color-danger: #ef4444;
+    --color-danger-bg: #fef2f2;
+    --color-danger-border: #fca5a5;
+    color-scheme: light;
+
+    /* full box-shadow values, not just colors — dark mode needs a
+       different shadow strength/tint, not just the same shadow at a
+       different opacity */
+    --shadow-navbar: 0 1px 8px rgba(0, 0, 0, 0.06);
+    --shadow-dropdown: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] {
+    --color-bg-page: #0f1117;
+    --color-bg-surface: #1a1c25;
+    --color-border: #2e313d;
+
+    --color-text-primary: #e5e7eb;
+    --color-text-secondary: #9ca3af;
+    --color-text-muted: #6b7280;
+
+    /* brightened so it still reads clearly against a dark surface */
+    --color-accent: #a78bfa;
+    --color-accent-bg: rgba(124, 58, 237, 0.16);
+
+    --color-danger: #f87171;
+    --color-danger-bg: rgba(239, 68, 68, 0.12);
+    --color-danger-border: rgba(248, 113, 113, 0.4);
+
+    --shadow-navbar: 0 1px 8px rgba(0, 0, 0, 0.5);
+    --shadow-dropdown: 0 8px 24px rgba(0, 0, 0, 0.6);
+    color-scheme: dark;
+}
