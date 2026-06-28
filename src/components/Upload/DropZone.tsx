@@ -6,14 +6,41 @@ import { mergeAndNormalizeExports, extractReelShares } from '../../parser/normal
 import { buildZipIndex, scanInboxesFromIndex, resolveInboxTitles } from '../../parser/zipParser';
 import { useChatContext } from '../../context/ChatContext';
 import type { RawInstagramExport } from '../../types/instagram';
+import { useThemeContext } from '../../hooks/ThemeContext';
+
+function SunIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+    </svg>
+  );
+}
+
+function MoonIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    </svg>
+  );
+}
 
 export default function DropZone() {
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState('');
-  const { setMessages, setParticipants, setReelShares, setZipFile, setInboxes } = useChatContext();
+
+  const {
+    setMessages,
+    setParticipants,
+    setReelShares,
+    setZipFile,
+    setInboxes,
+  } = useChatContext();
+
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useThemeContext();
 
   const processFiles = useCallback(async (files: File[]) => {
     setError(null);
@@ -44,7 +71,11 @@ export default function DropZone() {
         setIsLoading(false);
         navigate('/select');
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to read zip. Try JSON files instead.');
+        setError(
+          err instanceof Error
+            ? err.message
+            : 'Failed to read zip. Try JSON files instead.'
+        );
         setIsLoading(false);
       }
       return;
@@ -61,32 +92,46 @@ export default function DropZone() {
     const readers = jsonFiles.map(file =>
       new Promise<RawInstagramExport>((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = (e) => {
+
+        reader.onload = e => {
           try {
             resolve(parseInstagramExport(e.target?.result as string));
           } catch (err) {
             reject(err);
           }
         };
-        reader.onerror = () => reject(new Error(`Could not read ${file.name}`));
+
+        reader.onerror = () =>
+          reject(new Error(`Could not read ${file.name}`));
+
         reader.readAsText(file);
       })
     );
 
     try {
       const exports = await Promise.all(readers);
+
       const participants = exports[0].participants.map(p => p.name);
       const msgs = mergeAndNormalizeExports(exports);
       const reels = extractReelShares(exports);
+
       setMessages(msgs);
       setParticipants(participants);
       setReelShares(reels);
+
       navigate('/dashboard');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to parse files.');
       setIsLoading(false);
     }
-  }, [setMessages, setParticipants, setReelShares, setZipFile, setInboxes, navigate]);
+  }, [
+    setMessages,
+    setParticipants,
+    setReelShares,
+    setZipFile,
+    setInboxes,
+    navigate,
+  ]);
 
   const onDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -100,24 +145,59 @@ export default function DropZone() {
 
   return (
     <div className="upload-page">
+
       <div className="upload-hero">
-        <h1 className="upload-hero-title">InstaInsights</h1>
-        <p className="upload-hero-subtitle">Upload your Instagram chat export and get deep insights.</p>
-        <p className="upload-hero-privacy">🔒 Everything stays on your device. Nothing is uploaded.</p>
+
+        <div className="hero-header">
+          <h1 className="upload-hero-title">InstaInsights</h1>
+
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="theme-toggle"
+            aria-label={
+              theme === 'dark'
+                ? 'Switch to light mode'
+                : 'Switch to dark mode'
+            }
+          >
+            {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+          </button>
+        </div>
+
+        <p className="upload-hero-subtitle">
+          Upload your Instagram chat export and get deep insights.
+        </p>
+
+        <p className="upload-hero-privacy">
+          🔒 Everything stays on your device. Nothing is uploaded.
+        </p>
+
       </div>
 
       <div className="dropzone-wrapper">
         <div
           className={`dropzone-card ${isDragging ? 'dropzone-card--dragging' : ''}`}
-          onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+          onDragOver={(e) => {
+            e.preventDefault();
+            setIsDragging(true);
+          }}
           onDragLeave={() => setIsDragging(false)}
           onDrop={onDrop}
           onClick={() => document.getElementById('fileInput')?.click()}
         >
           <span className="dropzone-icon">📂</span>
-          <p className="dropzone-title">Drop your ZIP or JSON files here</p>
-          <p className="dropzone-subtitle">Upload the full ZIP export or individual message JSON files</p>
+
+          <p className="dropzone-title">
+            Drop your ZIP or JSON files here
+          </p>
+
+          <p className="dropzone-subtitle">
+            Upload the full ZIP export or individual message JSON files
+          </p>
+
           <p className="dropzone-hint">or click to browse</p>
+
           <input
             id="fileInput"
             type="file"
@@ -129,11 +209,15 @@ export default function DropZone() {
         </div>
 
         {isLoading && (
-          <p className="dropzone-loading">⏳ {status}</p>
+          <p className="dropzone-loading">
+            ⏳ {status}
+          </p>
         )}
 
         {error && (
-          <p className="dropzone-error">⚠️ {error}</p>
+          <p className="dropzone-error">
+            ⚠️ {error}
+          </p>
         )}
       </div>
 
@@ -146,20 +230,26 @@ export default function DropZone() {
           '😄 Emoji Stats',
           '💬 Word Frequency',
         ].map(f => (
-          <span key={f} className="feature-pill">{f}</span>
+          <span key={f} className="feature-pill">
+            {f}
+          </span>
         ))}
       </div>
 
       <div className="instructions-card">
-        <p className="instructions-title">📥 How to export your Instagram messages</p>
-        <p className="instructions-subtitle">
-          To download only your messages instead of your entire account data, use the
-          "Download Your Information" tool in the app. Filtering by "Messages" dramatically
-          reduces file size and processing time.
+        <p className="instructions-title">
+          📥 How to export your Instagram messages
         </p>
+
+        <p className="instructions-subtitle">
+          To download only your messages instead of your entire account data,
+          use the "Download Your Information" tool in the app. Filtering by
+          "Messages" dramatically reduces file size and processing time.
+        </p>
+
         <div className="instructions-steps">
           {[
-            <><strong>Open the Instagram app</strong> and tap your <strong>Profile picture</strong> in the bottom right corner.</>,
+            <> <strong>Open the Instagram app</strong> and tap your <strong>Profile picture</strong> in the bottom right corner.</>,
             <>Tap the <strong>Hamburger Menu</strong> (three horizontal lines) in the top-right, then select <strong>Settings and Activity</strong>.</>,
             <>Tap <strong>Accounts Center</strong> and go to <strong>Your Information and Permissions</strong>.</>,
             <>Select <strong>Download Your Information</strong> (or Export Your Information) and tap <strong>Create Export</strong>.</>,
@@ -176,6 +266,7 @@ export default function DropZone() {
           ))}
         </div>
       </div>
+
     </div>
   );
 }

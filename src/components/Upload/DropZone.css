@@ -246,3 +246,35 @@
     padding: 1.25rem;
   }
 }
+
+.hero-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.theme-toggle {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    background: var(--card-background);
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.theme-toggle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.theme-toggle svg {
+    width: 22px;
+    height: 22px;
+}
