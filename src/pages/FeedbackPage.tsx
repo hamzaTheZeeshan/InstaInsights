@@ -99,7 +99,7 @@ export default function FeedbackPage() {
 
           {/* Email */}
           <div className="feedback-section">
-            <p className="feedback-label">Your email (optional)</p>
+            <p className="feedback-label">Your email</p>
             <input
               type="email"
               value={email}
