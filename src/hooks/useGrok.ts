@@ -1,6 +1,5 @@
 import { useState } from 'react';
 
-const GROQ_API_KEY = 'grokkeyhere';
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 interface GrokContext {
