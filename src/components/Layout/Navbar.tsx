@@ -21,22 +21,27 @@ function MoonIcon() {
   );
 }
 
-// No props needed — theme comes from context now
 export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
-  const { reset, zipFile } = useChatContext();
-  const { theme, toggleTheme } = useThemeContext(); // ← single source of truth
+  const { theme, toggleTheme } = useThemeContext();
+  const { reset, zipFile, selectedInbox, setSelectedInbox } = useChatContext();
 
-  const links = [
-    ...(zipFile ? [{ path: '/select', label: '← Conversations' }] : []),
-    { path: '/dashboard', label: 'Dashboard' },
-    { path: '/analytics', label: 'Analytics' },
-    { path: '/search', label: 'Search' },
-    { path: '/creators', label: 'About The Creators' },
-    { path: '/feedback', label: 'Feedback' },
-  ];
+  const links = selectedInbox
+    ? [
+        { path: '/dashboard', label: 'Dashboard' },
+        { path: '/analytics', label: 'Analytics' },
+        { path: '/search', label: 'Search' },
+        { path: '/creators', label: 'About The Creators' },
+        { path: '/feedback', label: 'Feedback' },
+      ]
+    : [
+        { path: '/dashboard', label: 'Total Stats' },
+        { path: '/select', label: 'Select a Conversation' },
+        { path: '/creators', label: 'About The Creators' },
+        { path: '/feedback', label: 'Feedback' },
+      ];
 
   const handleReset = () => {
     reset();
@@ -46,6 +51,12 @@ export default function Navbar() {
 
   const handleNavigate = (path: string) => {
     navigate(path);
+    setMenuOpen(false);
+  };
+
+  const handleBackToConversations = () => {
+    setSelectedInbox(null);
+    navigate('/select');
     setMenuOpen(false);
   };
 
@@ -63,6 +74,15 @@ export default function Navbar() {
       </span>
 
       <div className={`navbar-links ${menuOpen ? 'navbar-links--open' : ''}`}>
+        {selectedInbox && (
+          <button
+            type="button"
+            onClick={handleBackToConversations}
+            className={location.pathname === '/select' ? 'nav-link nav-link--active' : 'nav-link'}
+          >
+            Select a Conversations
+          </button>
+        )}
         {links.map(link => (
           <button
             type="button"
