@@ -1,9 +1,15 @@
 import './DropZone.css';
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { strFromU8 } from 'fflate';
 import { parseInstagramExport } from '../../parser/instagramParser';
 import { mergeAndNormalizeExports, extractReelShares } from '../../parser/normalizeMessages';
-import { buildZipIndex, scanInboxesFromIndex, resolveInboxTitles } from '../../parser/zipParser';
+import {
+  buildZipIndex,
+  scanInboxesFromIndex,
+  resolveInboxTitles,
+  extractFilesFromZip,
+} from '../../parser/zipParser';
 import { useChatContext } from '../../context/ChatContext';
 import type { RawInstagramExport } from '../../types/instagram';
 import { useThemeContext } from '../../hooks/ThemeContext';
@@ -25,6 +31,59 @@ function MoonIcon() {
   );
 }
 
+/**
+ * Detect "my name" from a set of exports.
+ *
+ * Strategy: the account owner appears in EVERY conversation's participants list.
+ * We collect participant sets from each inbox's first export and find the
+ * intersection — the name present in all of them is you.
+ *
+ * Fallback: if only one inbox or intersection fails, fall back to the most
+ * frequent sender (original heuristic).
+ */
+function detectMyName(allExports: RawInstagramExport[], inboxExportMap: Map<string, RawInstagramExport[]>): string {
+  // Build participant sets per inbox (using the first export of each inbox)
+  const participantSets: Set<string>[] = [];
+  for (const [, exports] of inboxExportMap) {
+    if (exports.length === 0) continue;
+    const names = new Set(exports[0].participants.map(p => p.name));
+    participantSets.push(names);
+  }
+
+  if (participantSets.length >= 2) {
+    // Intersection: names that appear in every inbox's participant list
+    let intersection = participantSets[0];
+    for (let i = 1; i < participantSets.length; i++) {
+      intersection = new Set([...intersection].filter(n => participantSets[i].has(n)));
+    }
+    if (intersection.size === 1) {
+      return [...intersection][0];
+    }
+    // If multiple names in intersection (e.g. group chats with same people),
+    // pick the one who sent the most messages overall
+    if (intersection.size > 1) {
+      const counts: Record<string, number> = {};
+      for (const exp of allExports) {
+        for (const msg of exp.messages) {
+          if (intersection.has(msg.sender_name)) {
+            counts[msg.sender_name] = (counts[msg.sender_name] || 0) + 1;
+          }
+        }
+      }
+      return Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? '';
+    }
+  }
+
+  // Fallback: most frequent sender across all messages
+  const counts: Record<string, number> = {};
+  for (const exp of allExports) {
+    for (const msg of exp.messages) {
+      counts[msg.sender_name] = (counts[msg.sender_name] || 0) + 1;
+    }
+  }
+  return Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? '';
+}
+
 export default function DropZone() {
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -37,6 +96,9 @@ export default function DropZone() {
     setReelShares,
     setZipFile,
     setInboxes,
+    setAllMessages,
+    setMyName,
+    setAllInboxData,
   } = useChatContext();
 
   const navigate = useNavigate();
@@ -68,6 +130,58 @@ export default function DropZone() {
 
         setZipFile(zipFile);
         setInboxes(resolvedInboxes);
+
+        // Collect ALL message file paths
+        const allMessagePaths = new Set<string>();
+        for (const inbox of resolvedInboxes) {
+          for (const path of inbox.messageFiles) {
+            allMessagePaths.add(path);
+          }
+        }
+
+        setStatus(`Loading ${allMessagePaths.size} message files in one pass...`);
+
+        const extractedFiles = await extractFilesFromZip(zipFile, allMessagePaths);
+
+        // Parse every extracted file, tracking which exports belong to which inbox
+        const allExports: RawInstagramExport[] = [];
+        const inboxExportMap = new Map<string, RawInstagramExport[]>();
+
+        for (const inbox of resolvedInboxes) {
+          const inboxExports: RawInstagramExport[] = [];
+          for (const filePath of inbox.messageFiles) {
+            const data = extractedFiles[filePath];
+            if (!data) continue;
+            try {
+              const text = strFromU8(data);
+              const raw = parseInstagramExport(text);
+              allExports.push(raw);
+              inboxExports.push(raw);
+            } catch (err) {
+              console.warn(`Skipping malformed file: ${filePath}`, err);
+            }
+          }
+          inboxExportMap.set(inbox.folderName, inboxExports);
+        }
+
+        setStatus('Identifying your account...');
+        const detectedName = detectMyName(allExports, inboxExportMap);
+        setMyName(detectedName);
+
+        // Build per-inbox message lists and aggregate — same shape as useAllInboxesData
+        // This happens here while files are already in memory, so the stats page
+        // never needs to re-read the zip.
+        setStatus('Preparing stats...');
+        const perInbox = resolvedInboxes.map(inbox => {
+          const exports = inboxExportMap.get(inbox.folderName) ?? [];
+          const msgs = mergeAndNormalizeExports(exports);
+          return { inbox, messages: msgs };
+        }).filter(d => d.messages.length > 0);
+
+        const allMsgs = perInbox.flatMap(d => d.messages);
+        setAllMessages(allMsgs);
+        setAllInboxData({ allMessages: allMsgs, inboxDataList: perInbox });
+
         setIsLoading(false);
         navigate('/select');
       } catch (err) {
@@ -81,6 +195,7 @@ export default function DropZone() {
       return;
     }
 
+    // JSON file handling
     if (jsonFiles.length === 0) {
       setError('Please upload a .zip file or one or more .json files.');
       setIsLoading(false);
@@ -92,7 +207,6 @@ export default function DropZone() {
     const readers = jsonFiles.map(file =>
       new Promise<RawInstagramExport>((resolve, reject) => {
         const reader = new FileReader();
-
         reader.onload = e => {
           try {
             resolve(parseInstagramExport(e.target?.result as string));
@@ -100,10 +214,7 @@ export default function DropZone() {
             reject(err);
           }
         };
-
-        reader.onerror = () =>
-          reject(new Error(`Could not read ${file.name}`));
-
+        reader.onerror = () => reject(new Error(`Could not read ${file.name}`));
         reader.readAsText(file);
       })
     );
@@ -115,9 +226,20 @@ export default function DropZone() {
       const msgs = mergeAndNormalizeExports(exports);
       const reels = extractReelShares(exports);
 
+      // For JSON uploads: you are the participant who sent the most
+      const counts: Record<string, number> = {};
+      for (const exp of exports) {
+        for (const msg of exp.messages) {
+          counts[msg.sender_name] = (counts[msg.sender_name] || 0) + 1;
+        }
+      }
+      const detectedName = Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? '';
+      setMyName(detectedName);
+
       setMessages(msgs);
       setParticipants(participants);
       setReelShares(reels);
+      setAllMessages(msgs);
 
       navigate('/dashboard');
     } catch (err) {
@@ -130,6 +252,9 @@ export default function DropZone() {
     setReelShares,
     setZipFile,
     setInboxes,
+    setAllMessages,
+    setMyName,
+    setAllInboxData,
     navigate,
   ]);
 

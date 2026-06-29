@@ -37,7 +37,7 @@ export default function Navbar() {
         { path: '/feedback', label: 'Feedback' },
       ]
     : [
-        { path: '/dashboard', label: 'Total Stats' },
+        { path: '/totalStats', label: 'Total Stats' },
         { path: '/select', label: 'Select a Conversation' },
         { path: '/creators', label: 'About The Creators' },
         { path: '/feedback', label: 'Feedback' },
