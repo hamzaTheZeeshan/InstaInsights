@@ -5,9 +5,10 @@ import TopWordsChart from '../components/Charts/TopWordsChart';
 import YearlyHeatmap from '../components/Charts/YearlyHeatmap';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { useChatData } from '../hooks/useChatData';
+import AIInsightsChat from '../AIInsightsChat/AIInsightsChat';
 
 export default function AnalyticsPage() {
-  const { messageStats, wordStats, emojiStats, mediaStats, responseStats } = useAnalytics();
+  const { messageStats, wordStats, emojiStats, mediaStats, responseStats, activityStats } = useAnalytics();
   const { messages } = useChatData();
 
   return (
@@ -114,6 +115,17 @@ export default function AnalyticsPage() {
           </div>
         </div>
 
+        {/* ── AI Insights Chat ── */}
+        <AIInsightsChat
+          messageStats={messageStats}
+          activityStats={activityStats}
+          responseStats={responseStats}
+          wordStats={wordStats}
+          emojiStats={emojiStats}
+          mediaStats={mediaStats}
+          messages={messages}
+        />
+        
         {/* Yearly Heatmap */}
         <div className="yearly-heatmap-card">
           <YearlyHeatmap messages={messages} />
