@@ -1,27 +1,28 @@
 import { useState } from 'react';
 
-const GEMINI_API_KEY = 'AQ.Ab8RN6IKhabelgidlUOvrnSAgrqe3cLWnwADGc1VIkZrZb67QA'; // must start with AIza...
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+const GEMINI_API_KEY = 'AQ.Ab8RN6KKC3YbV4Sbz6ERADnZFu1ZkdBexaRlDZAzFcOvkPGjHA'; 
+const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
 async function callModel(prompt: string): Promise<string> {
   const res = await fetch(GEMINI_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'x-goog-api-key': GEMINI_API_KEY, 
+    },
     body: JSON.stringify({
       contents: [
-        {
-          parts: [{ text: prompt }],
-        },
+        { parts: [{ text: prompt }] },
       ],
       generationConfig: {
         temperature: 0.6,
         maxOutputTokens: 600,
-        thinkingConfig: {
-          thinkingBudget: 0,
-        },
+        thinkingConfig: { thinkingBudget: 0 },
       },
     }),
   });
+
+  // ...rest of your function stays identical
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
