@@ -191,7 +191,7 @@ export default function OverallStatsPage() {
               {myPhrases.map(({ phrase, count }) => (
                 <div key={phrase} className="os-phrase-chip">
                   <p className="os-phrase-text">"{phrase}"</p>
-                  <p className="os-phrase-count">used {count}× across all chats</p>
+                  <p className="os-phrase-count">used {count}× across all chats</p>/
                 </div>
               ))}
             </div>
