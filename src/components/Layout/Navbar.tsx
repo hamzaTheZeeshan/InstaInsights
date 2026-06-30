@@ -26,7 +26,7 @@ export default function Navbar() {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const { theme, toggleTheme } = useThemeContext();
-  const { reset, zipFile, selectedInbox, setSelectedInbox } = useChatContext();
+  const { reset, selectedInbox, setSelectedInbox } = useChatContext();
 
   const links = selectedInbox
     ? [

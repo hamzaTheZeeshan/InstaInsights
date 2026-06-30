@@ -1,7 +1,7 @@
 import Layout from '../components/Layout/Layout';
 import TimelineChart from '../components/Charts/TimelineChart';
 import InboxBreakdownChart from '../components/Charts/InboxBreakdownChart';
-import { useOverallStats } from '../hooks/UseOverallStats';
+import { useOverallStats } from '../hooks/useOverallStats';
 import './OverallStatsPage.css';
 
 /* ── Helpers ────────────────────────────────────────────────── */
@@ -27,7 +27,6 @@ export default function OverallStatsPage() {
     avgPerDay,
     personStats,
     mostTalkedTo,
-    myName,
     firstMsgRecipient,
     firstMsg,
     lastMsg,
