@@ -17,6 +17,26 @@ interface ChatMessage {
   content: string;
 }
 
+// Custom four-point spark mark — drawn as SVG rather than relying on
+// an emoji, so it renders identically across platforms and reads as
+// a deliberate brand mark rather than a generic "sparkles" glyph.
+function SparkMark({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M12 2.5C12.3 6.3 13.2 8.7 15 10.5C16.8 12.3 19.2 13.2 23 13.5C19.2 13.8 16.8 14.7 15 16.5C13.2 18.3 12.3 20.7 12 24.5C11.7 20.7 10.8 18.3 9 16.5C7.2 14.7 4.8 13.8 1 13.5C4.8 13.2 7.2 12.3 9 10.5C10.8 8.7 11.7 6.3 12 2.5Z"
+        fill="currentColor"
+        transform="translate(0 -1)"
+      />
+    </svg>
+  );
+}
+
 export default function AIInsightsChat({
   messageStats,
   activityStats,
@@ -26,7 +46,7 @@ export default function AIInsightsChat({
   mediaStats,
   messages,
 }: AIInsightsChatProps) {
-  const { ask, answer, loading, error, reset } = useGrok();
+  const { ask, answer, loading, error} = useGrok();
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [inputQuestion, setInputQuestion] = useState('');
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -99,13 +119,15 @@ export default function AIInsightsChat({
     <div className="ai-chat-wrapper">
       <div className="ai-chat-header">
         <div className="ai-chat-header-left">
-          <span className="ai-chat-avatar">✨</span>
+          <span className="ai-chat-avatar">
+            <SparkMark className="ai-chat-avatar-icon" />
+          </span>
           <div>
             <p className="ai-chat-title">Ask AI</p>
             <p className="ai-chat-subtitle">Powered by your real data</p>
           </div>
         </div>
-        <span className="ai-chat-badge">Groq</span>
+        <span className="ai-chat-badge">Gemini</span>
       </div>
 
       {/* Chat transcript */}
@@ -122,7 +144,9 @@ export default function AIInsightsChat({
             if (msg.type === 'answer') {
               return (
                 <div key={i} className="ai-chat-bubble ai-chat-bubble--answer">
-                  <span className="ai-chat-answer-icon">✨</span>
+                  <span className="ai-chat-answer-icon">
+                    <SparkMark />
+                  </span>
                   <p>{msg.content}</p>
                 </div>
               );
@@ -136,7 +160,9 @@ export default function AIInsightsChat({
 
           {loading && (
             <div className="ai-chat-bubble ai-chat-bubble--answer ai-chat-bubble--loading">
-              <span className="ai-chat-answer-icon">✨</span>
+              <span className="ai-chat-answer-icon">
+                <SparkMark />
+              </span>
               <div className="ai-chat-typing">
                 <span /><span /><span />
               </div>
@@ -150,7 +176,7 @@ export default function AIInsightsChat({
       {/* Empty state */}
       {chatHistory.length === 0 && (
         <div className="ai-chat-empty">
-          <p className="ai-chat-empty-title">Your chat, decoded 🔍</p>
+          <p className="ai-chat-empty-title">Ask about your chats?</p>
           <p className="ai-chat-empty-sub">
             Ask any question about your conversation and I'll analyse your real messages to answer it.
           </p>
@@ -178,7 +204,7 @@ export default function AIInsightsChat({
           </button>
         </div>
         <div className="ai-chat-input-hint">
-          <span>💡 Try: "What do we talk about most?" or "Who starts conversations more?"</span>
+          <span>Try: "What do we talk about most?" or "Who starts conversations more?"</span>
         </div>
       </div>
     </div>

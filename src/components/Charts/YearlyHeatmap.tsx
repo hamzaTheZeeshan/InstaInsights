@@ -98,7 +98,7 @@ export default function YearlyHeatmap({ messages }: Props) {
     <>
       {/* Header */}
       <div className="yheatmap-header">
-        <h3 className="yheatmap-title">Yearly Activity</h3>
+        <h3 className="chart-card-title">Yearly Activity</h3>
         <div className="yheatmap-year-tabs">
           {years.map(y => (
             <button

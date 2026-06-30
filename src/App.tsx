@@ -6,7 +6,7 @@ import SearchPage from './pages/SearchPage';
 import CreatorsPage from './pages/CreatorsPage';
 import SelectInboxPage from './pages/SelectInboxPage';
 import FeedbackPage from './pages/FeedbackPage';
-import OverallStatsPage from './pages/Overallstatspage';
+import OverallStatsPage from './pages/OverallStatsPage';
 
 // Theme is handled by ThemeProvider in main.tsx — no useTheme needed here.
 function App() {

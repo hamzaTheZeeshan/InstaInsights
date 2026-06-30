@@ -115,22 +115,23 @@ export default function AnalyticsPage() {
           </div>
         </div>
 
-        {/* ── AI Insights Chat ── */}
-        <AIInsightsChat
-          messageStats={messageStats}
-          activityStats={activityStats}
-          responseStats={responseStats}
-          wordStats={wordStats}
-          emojiStats={emojiStats}
-          mediaStats={mediaStats}
-          messages={messages}
-        />
-        
         {/* Yearly Heatmap */}
         <div className="yearly-heatmap-card">
           <YearlyHeatmap messages={messages} />
         </div>
 
+        <div className="yearly-heatmap-card">
+          {/* ── AI Insights Chat ── */}
+          <AIInsightsChat
+            messageStats={messageStats}
+            activityStats={activityStats}
+            responseStats={responseStats}
+            wordStats={wordStats}
+            emojiStats={emojiStats}
+            mediaStats={mediaStats}
+            messages={messages}
+          />
+        </div>
       </div>
     </Layout>
   );
